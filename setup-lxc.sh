@@ -55,8 +55,14 @@ echo -e "${YELLOW}[5/7] Preparing project dependencies...${NC_PLAIN}"
 
 # Ensure .env file exists
 if [ ! -f .env ]; then
-  echo -e "${YELLOW}No .env file found. Creating default production .env...${NC_PLAIN}"
-  cat <<EOT > .env
+  if [ -f .env.example ]; then
+    echo -e "${YELLOW}No .env file found. Creating .env by copying .env.example...${NC_PLAIN}"
+    cp .env.example .env
+    # Inject the database password configured during MariaDB installation
+    sed -i 's/DB_PASSWORD=/DB_PASSWORD=my1p@ssw0rd/g' .env
+  else
+    echo -e "${RED}Error: .env.example not found. Creating a fallback .env...${NC_PLAIN}"
+    cat <<EOT > .env
 PORT=5000
 DB_HOST=localhost
 DB_PORT=3306
@@ -66,6 +72,7 @@ DB_NAME=tn_claims
 JWT_SECRET=supersecretjwtkey123!@#
 NODE_ENV=production
 EOT
+  fi
 fi
 
 # Install npm packages
