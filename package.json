@@ -9,7 +9,8 @@
     "client": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:init": "node server/init-db.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.1",

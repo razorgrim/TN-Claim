@@ -79,6 +79,10 @@ fi
 echo -e "${YELLOW}Running npm install...${NC_PLAIN}"
 npm install
 
+# Initialize database schema and seeds
+echo -e "${YELLOW}Initializing database schema and seed data...${NC_PLAIN}"
+npm run db:init
+
 # Build the client production assets
 echo -e "${YELLOW}Building frontend assets (Vite)...${NC_PLAIN}"
 npm run build
