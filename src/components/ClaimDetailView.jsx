@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ArrowLeft, Check, X, Printer, Calendar, FileText, CheckCircle2, AlertCircle, XCircle, ImageIcon, Trash2, Archive
 } from 'lucide-react';
+import { MOCK_RECEIPT_IMAGES } from '../utils/mockData.js';
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
   const cleanDate = dateStr.split('T')[0].split(' ')[0];
@@ -105,7 +106,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
 
   const isPdf = (url) => {
     if (!url) return false;
-    return url.startsWith('data:application/pdf') || url.endsWith('.pdf') || url.includes('.pdf');
+    const lower = url.toLowerCase();
+    return lower.startsWith('data:application/pdf') || lower.endsWith('.pdf') || lower.includes('.pdf');
   };
 
   const getItemReceipts = (item) => {

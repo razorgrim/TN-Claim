@@ -70,7 +70,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
 
   const isPdf = (url) => {
     if (!url) return false;
-    return url.startsWith('data:application/pdf') || url.endsWith('.pdf') || url.includes('.pdf');
+    const lower = url.toLowerCase();
+    return lower.startsWith('data:application/pdf') || lower.endsWith('.pdf') || lower.includes('.pdf');
   };
 
   const handleRowChange = (index, field, value) => {
