@@ -205,7 +205,7 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-none mx-auto">
       {/* Header Panel */}
       <div className="flex items-center justify-between">
         <button
@@ -284,7 +284,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                       value={item.date}
                       required
                       onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600"
+                      style={{ colorScheme: 'light' }}
                     />
                   </td>
 
@@ -446,7 +447,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                     type="date"
                     value={item.date}
                     onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
                 <div>

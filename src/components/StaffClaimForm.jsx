@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { 
-  Plus, Trash2, Calendar, FileText, Upload, Eye, EyeOff, AlertTriangle, CheckCircle, ArrowLeft, Image as ImageIcon 
+  Plus, Trash2, Calendar, FileText, Upload, Eye, EyeOff, AlertTriangle, CheckCircle, ArrowLeft, Image as ImageIcon, X 
 } from 'lucide-react';
 
 export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft, onSubmitClaim, onCancel }) {
   const [items, setItems] = useState(() => {
     if (draftClaim && draftClaim.items && draftClaim.items.length > 0) {
-      return draftClaim.items.map(item => ({
-        ...item,
-        vehicle: item.vehicle || 'bike',
-        outstationType: item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : 'none'),
-        outstationAmount: item.outstationAmount || 0
-      }));
+      return draftClaim.items.map(item => {
+        const receipts = item.receipts || (item.receipt ? [item.receipt] : []);
+        return {
+          ...item,
+          vehicle: item.vehicle || 'bike',
+          outstationType: item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : 'none'),
+          outstationAmount: item.outstationAmount || 0,
+          receipts: receipts,
+          receipt: receipts[0] || ''
+        };
+      });
     }
     return [
       {
@@ -25,6 +30,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         toll: 0.00,
         medical: 0.00,
         receipt: '', // Base64 receipt image
+        receipts: [], // Array of base64 receipt images/PDFs
         total: 0.00
       }
     ];
@@ -80,17 +86,37 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     setValidationError('');
   };
 
-  // Handle receipt image uploading (Base64 conversion)
-  const handleReceiptUpload = (index, file) => {
-    if (!file) return;
+  // Handle multiple receipt files uploading (Base64 conversion)
+  const handleReceiptsUpload = (index, files) => {
+    if (!files || files.length === 0) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const updated = [...items];
-      updated[index].receipt = e.target.result;
-      setItems(updated);
-    };
-    reader.readAsDataURL(file);
+    const fileArray = Array.from(files);
+    const loadedReceipts = [];
+
+    let loadedCount = 0;
+    fileArray.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        loadedReceipts.push(e.target.result);
+        loadedCount++;
+        if (loadedCount === fileArray.length) {
+          const updated = [...items];
+          updated[index].receipts = [...(updated[index].receipts || []), ...loadedReceipts];
+          updated[index].receipt = updated[index].receipts[0] || '';
+          setItems(updated);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveReceipt = (index, receiptIndex) => {
+    const updated = [...items];
+    const itemReceipts = updated[index].receipts || [];
+    const newReceipts = itemReceipts.filter((_, i) => i !== receiptIndex);
+    updated[index].receipts = newReceipts;
+    updated[index].receipt = newReceipts[0] || '';
+    setItems(updated);
   };
 
   const addRow = () => {
@@ -108,6 +134,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         toll: 0.00,
         medical: 0.00,
         receipt: '',
+        receipts: [],
         total: 0.00
       }
     ]);
@@ -126,6 +153,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         toll: 0.00,
         medical: 0.00,
         receipt: '',
+        receipts: [],
         total: 0.00
       }]);
     } else {
@@ -153,25 +181,14 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       return;
     }
 
-    // 2. Receipt check: Toll claim must be attached with proof
-    const noTollReceiptIndex = items.findIndex(item => item.toll > 0 && !item.receipt);
-    if (noTollReceiptIndex !== -1) {
-      setValidationError(`Row ${noTollReceiptIndex + 1}: Toll claim must be attached with proof.`);
+    // 2. Receipt check: Every row must have at least one proof/receipt attached
+    const noReceiptIndex = items.findIndex(item => !item.receipts || item.receipts.length === 0);
+    if (noReceiptIndex !== -1) {
+      setValidationError(`Row ${noReceiptIndex + 1}: Proof/receipt attachment is compulsory.`);
       return;
     }
 
-    // 3. Receipt check: Medical claim must be attached with proof
-    const noMedicalReceiptIndex = items.findIndex(item => item.medical > 0 && !item.receipt);
-    if (noMedicalReceiptIndex !== -1) {
-      setValidationError(`Row ${noMedicalReceiptIndex + 1}: Medical claim must be attached with proof.`);
-      return;
-    }
 
-    // 4. Mileage check: mileage distance should exceed 15km (warning already shown, but let's enforce if there's distance but it's small without confirmation)
-    const lowMileageIndex = items.findIndex(item => item.mileageDistance > 0 && item.mileageDistance < 15);
-    if (lowMileageIndex !== -1) {
-      // Just a warning in form, but let's block or ask to confirm. Let's allow them to submit but warn in UI.
-    }
 
     // Sort items chronologically by date before submitting
     const sortedItems = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -213,7 +230,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-none mx-auto">
       {/* Header Panel */}
       <div className="flex items-center justify-between">
         <button
@@ -254,19 +271,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             <div className="font-bold text-slate-300 flex items-center gap-1">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-500" /> IMPORTANT REMARKS:
             </div>
-            <div>• **Mileage Claim** (Car: **RM 0.50/KM**, Bike: **RM 0.40/KM**) must exceed minimum radius of **15KM** from office.</div>
-            <div>• **Outstation Claim**: **Daily** = **RM 15.00** | **Sleepover** = **RM 30.00**.</div>
-            <div>• **Toll and Medical Claims** MUST be attached with proof.</div>
+            <div>• **Mileage Claim**: Staff must deduct **15KM per trip** from office when entering the mileage.</div>
+            <div>• **Proof / Receipts**: ALL claim rows MUST be attached with proof (multiple files supported).</div>
           </div>
-          <div className="bg-slate-900/60 px-4 py-3 rounded-xl border border-slate-800 flex flex-wrap gap-4 items-center justify-between text-center grow md:grow-0">
-            <div className="font-mono text-left">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Mileage Rates</span>
-              <span className="text-cyan-400 font-bold text-xs block">Car: RM 0.50/KM</span>
-              <span className="text-cyan-400 font-bold text-xs block">Bike: RM 0.40/KM</span>
-            </div>
-            <div className="border-l border-slate-800 h-8 hidden sm:block" />
+          <div className="bg-slate-900/60 px-6 py-3 rounded-xl border border-slate-800 flex items-center justify-center text-center grow md:grow-0">
             <div className="font-mono">
-              <span className="text-slate-400 block text-[10px]">GRAND TOTAL</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">GRAND TOTAL</span>
               <span className="text-emerald-400 font-extrabold text-sm">RM {grandTotal.toFixed(2)}</span>
             </div>
           </div>
@@ -301,7 +311,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                       value={item.date}
                       required
                       onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600"
+                      style={{ colorScheme: 'light' }}
                     />
                   </td>
 
@@ -337,15 +348,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                         placeholder="0"
                         value={item.mileageDistance || ''}
                         onChange={(e) => handleRowChange(index, 'mileageDistance', e.target.value)}
-                        className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${
-                          item.mileageDistance > 0 && item.mileageDistance < 15 ? 'border-amber-500/50' : 'border-slate-700'
-                        }`}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
                       />
-                      {item.mileageDistance > 0 && item.mileageDistance < 15 && (
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-amber-500" title="Must exceed 15km radius">
-                          <AlertTriangle className="w-3.5 h-3.5" />
-                        </div>
-                      )}
                     </div>
                   </td>
 
@@ -400,36 +404,53 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
 
                   {/* Proof Upload */}
                   <td className="px-2 py-3">
-                    <div className="flex items-center gap-2">
-                      <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
-                        item.receipt 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                          : (item.toll > 0 || item.medical > 0) 
-                          ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20' 
-                          : 'bg-slate-950 border-slate-700 text-slate-400 hover:bg-slate-800'
-                      }`}>
-                        <Upload className="w-3.5 h-3.5 shrink-0" />
-                        <span>{item.receipt ? 'Attached' : 'Upload'}</span>
-                        <input
-                          type="file"
-                          accept="image/*,application/pdf"
-                          className="hidden"
-                          onChange={(e) => handleReceiptUpload(index, e.target.files[0])}
-                        />
-                      </label>
-                      {item.receipt && (
-                        <button
-                          type="button"
-                          onClick={() => setReceiptPreviewUrl(item.receipt)}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded-lg border border-slate-700 transition-colors"
-                          title="Preview proof"
-                        >
-                          {item.receipt.startsWith('data:application/pdf') ? (
-                            <FileText className="w-3.5 h-3.5 text-cyan-400" />
-                          ) : (
-                            <ImageIcon className="w-3.5 h-3.5" />
-                          )}
-                        </button>
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
+                          item.receipts && item.receipts.length > 0 
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                            : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                        }`}>
+                          <Upload className="w-3.5 h-3.5 shrink-0" />
+                          <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Upload'}</span>
+                          <input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            className="hidden"
+                            multiple
+                            onChange={(e) => handleReceiptsUpload(index, e.target.files)}
+                          />
+                        </label>
+                      </div>
+                      
+                      {/* Uploaded files listing */}
+                      {item.receipts && item.receipts.length > 0 && (
+                        <div className="flex flex-wrap gap-1 max-w-[150px]">
+                          {item.receipts.map((rcpt, rIdx) => (
+                            <div key={rIdx} className="relative group/thumb">
+                              <button
+                                type="button"
+                                onClick={() => setReceiptPreviewUrl(rcpt)}
+                                className="p-1 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded border border-slate-700 transition-colors"
+                                title={`Preview proof ${rIdx + 1}`}
+                              >
+                                {rcpt.startsWith('data:application/pdf') ? (
+                                  <FileText className="w-3 h-3 text-cyan-400" />
+                                ) : (
+                                  <ImageIcon className="w-3 h-3 text-slate-400" />
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveReceipt(index, rIdx)}
+                                className="absolute -top-1 -right-1 bg-rose-600 text-white rounded-full p-0.5 hover:bg-rose-500 shadow-md transition-colors"
+                                title="Remove proof"
+                              >
+                                <X className="w-2 h-2" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </td>
@@ -482,7 +503,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     type="date"
                     value={item.date}
                     onChange={(e) => handleRowChange(index, 'date', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
                 <div>
@@ -507,13 +529,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     placeholder="Distance"
                     value={item.mileageDistance || ''}
                     onChange={(e) => handleRowChange(index, 'mileageDistance', e.target.value)}
-                    className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 ${
-                      item.mileageDistance > 0 && item.mileageDistance < 15 ? 'border-amber-500' : 'border-slate-700'
-                    }`}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
                   />
-                  {item.mileageDistance > 0 && item.mileageDistance < 15 && (
-                    <span className="text-[9px] text-amber-500 mt-1 block">Min radius is 15KM</span>
-                  )}
                 </div>
                 <div>
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Mileage RM</label>
@@ -582,39 +599,57 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 </div>
               </div>
 
-              <div className="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
-                <span className="text-xs font-semibold text-slate-400">Toll/Med Proof:</span>
-                <div className="flex items-center gap-2">
-                  <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${
-                    item.receipt 
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                      : (item.toll > 0 || item.medical > 0)
-                      ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                      : 'bg-slate-950 border-slate-700 text-slate-400'
-                  }`}>
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>{item.receipt ? 'Attached' : 'Capture Proof'}</span>
-                    <input
-                      type="file"
-                      accept="image/*,application/pdf"
-                      className="hidden"
-                      onChange={(e) => handleReceiptUpload(index, e.target.files[0])}
-                    />
-                  </label>
-                  {item.receipt && (
-                    <button
-                      type="button"
-                      onClick={() => setReceiptPreviewUrl(item.receipt)}
-                      className="p-1.5 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition-colors"
-                    >
-                      {item.receipt.startsWith('data:application/pdf') ? (
-                        <FileText className="w-4 h-4 text-cyan-400" />
-                      ) : (
-                        <ImageIcon className="w-4 h-4" />
-                      )}
-                    </button>
-                  )}
+              <div className="flex flex-col gap-2 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-400">Proof/Receipts:</span>
+                  <div className="flex items-center gap-2">
+                    <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${
+                      item.receipts && item.receipts.length > 0 
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                        : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+                    }`}>
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Capture Proof'}</span>
+                      <input
+                        type="file"
+                        accept="image/*,application/pdf"
+                        className="hidden"
+                        multiple
+                        onChange={(e) => handleReceiptsUpload(index, e.target.files)}
+                      />
+                    </label>
+                  </div>
                 </div>
+                
+                {/* Mobile receipts list */}
+                {item.receipts && item.receipts.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 pt-1.5 border-t border-slate-800">
+                    {item.receipts.map((rcpt, rIdx) => (
+                      <div key={rIdx} className="relative group/thumb">
+                        <button
+                          type="button"
+                          onClick={() => setReceiptPreviewUrl(rcpt)}
+                          className="p-1.5 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded border border-slate-700 transition-colors flex items-center justify-center"
+                          title={`Preview proof ${rIdx + 1}`}
+                        >
+                          {rcpt.startsWith('data:application/pdf') ? (
+                            <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                          ) : (
+                            <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveReceipt(index, rIdx)}
+                          className="absolute -top-1 -right-1 bg-rose-600 text-white rounded-full p-0.5 hover:bg-rose-500 shadow-md transition-colors"
+                          title="Remove proof"
+                        >
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}

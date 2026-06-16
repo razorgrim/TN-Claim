@@ -96,10 +96,17 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
     return MOCK_RECEIPT_IMAGES[receiptKey] || null;
   };
 
+  const getItemReceipts = (item) => {
+    if (item.receipts && Array.isArray(item.receipts) && item.receipts.length > 0) {
+      return item.receipts;
+    }
+    return item.receipt ? [item.receipt] : [];
+  };
+
   const allRowsApproved = claim.status === 'Approved' && (claim.items || []).every(item => item.approved === true);
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-none mx-auto px-2 md:px-6">
       <style dangerouslySetInnerHTML={{__html: `
         /* General styling for the print area (both screen preview and print) */
         .print-area {
@@ -370,20 +377,27 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5 font-medium">{item.reason}</td>
                         <td className="px-4 py-3.5">{item.authorization}</td>
                         <td className="px-4 py-3.5 text-center">
-                          {item.receipt ? (
-                            <button
-                              onClick={() => setReceiptModalUrl(getReceiptImage(item.receipt))}
-                              className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
-                            >
-                              {item.receipt.startsWith('data:application/pdf') ? (
-                                <FileText className="w-4 h-4" />
-                              ) : (
-                                <ImageIcon className="w-4 h-4" />
-                              )}
-                              <span className="text-[10px] font-bold underline">View</span>
-                            </button>
+                          {getItemReceipts(item).length > 0 ? (
+                            <div className="flex flex-col gap-1 items-center justify-center">
+                              {getItemReceipts(item).map((rcpt, rcptIdx) => (
+                                <button
+                                  key={rcptIdx}
+                                  onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
+                                  className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
+                                >
+                                  {rcpt.startsWith('data:application/pdf') ? (
+                                    <FileText className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <ImageIcon className="w-3.5 h-3.5" />
+                                  )}
+                                  <span className="text-[10px] font-bold underline">
+                                    View {getItemReceipts(item).length > 1 ? `#${rcptIdx + 1}` : ''}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
                           ) : (
-                            <span className="text-slate-500">-</span>
+                            <span className="text-slate-500 font-semibold">-</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5 text-center">
@@ -425,20 +439,27 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5">{item.description}</td>
                         <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-200">RM {item.amount.toFixed(2)}</td>
                         <td className="px-4 py-3.5 text-center">
-                          {item.receipt ? (
-                            <button
-                              onClick={() => setReceiptModalUrl(getReceiptImage(item.receipt))}
-                              className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
-                            >
-                              {item.receipt.startsWith('data:application/pdf') ? (
-                                <FileText className="w-4 h-4" />
-                              ) : (
-                                <ImageIcon className="w-4 h-4" />
-                              )}
-                              <span className="text-[10px] font-bold underline">View</span>
-                            </button>
+                          {getItemReceipts(item).length > 0 ? (
+                            <div className="flex flex-col gap-1 items-center justify-center">
+                              {getItemReceipts(item).map((rcpt, rcptIdx) => (
+                                <button
+                                  key={rcptIdx}
+                                  onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
+                                  className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
+                                >
+                                  {rcpt.startsWith('data:application/pdf') ? (
+                                    <FileText className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <ImageIcon className="w-3.5 h-3.5" />
+                                  )}
+                                  <span className="text-[10px] font-bold underline">
+                                    View {getItemReceipts(item).length > 1 ? `#${rcptIdx + 1}` : ''}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
                           ) : (
-                            <span className="text-slate-500">-</span>
+                            <span className="text-slate-500 font-semibold">-</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5 text-center">
@@ -493,20 +514,27 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                           RM {(item.total !== undefined ? item.total : ((item.mileageAmount || 0) + (item.toll || 0) + (item.medical || 0) + (item.outstationAmount || 0))).toFixed(2)}
                         </td>
                         <td className="px-4 py-3.5 text-center">
-                          {item.receipt ? (
-                            <button
-                              onClick={() => setReceiptModalUrl(getReceiptImage(item.receipt))}
-                              className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
-                            >
-                              {item.receipt.startsWith('data:application/pdf') ? (
-                                <FileText className="w-4 h-4" />
-                              ) : (
-                                <ImageIcon className="w-4 h-4" />
-                              )}
-                              <span className="text-[10px] font-bold underline">View</span>
-                            </button>
+                          {getItemReceipts(item).length > 0 ? (
+                            <div className="flex flex-col gap-1 items-center justify-center">
+                              {getItemReceipts(item).map((rcpt, rcptIdx) => (
+                                <button
+                                  key={rcptIdx}
+                                  onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
+                                  className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
+                                >
+                                  {rcpt.startsWith('data:application/pdf') ? (
+                                    <FileText className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <ImageIcon className="w-3.5 h-3.5" />
+                                  )}
+                                  <span className="text-[10px] font-bold underline">
+                                    View {getItemReceipts(item).length > 1 ? `#${rcptIdx + 1}` : ''}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
                           ) : (
-                            <span className="text-slate-500">-</span>
+                            <span className="text-slate-500 font-semibold">-</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5 text-center">
@@ -774,9 +802,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               </>
             ) : (
               <>
-                <div>- MILEAGE CLAIM (CAR: RM 0.50/KM, BIKE: RM 0.40/KM) <span className="font-bold">MUST</span> EXCEED THE MINIMUM RADIUS 15KM FROM TOTAL NEUTRON OFFICE</div>
-                <div>- TOLL CLAIM <span className="font-bold">MUST</span> BE ATTACHED WITH PROOF</div>
-                <div>- OUTSTATION CLAIM: Daily = RM 15.00 | Sleepover = RM 30.00</div>
+                <div>- MILEAGE CLAIM: Staff must deduct 15KM per trip from office when entering the mileage.</div>
+                <div>- PROOF / RECEIPTS: ALL claim rows MUST be attached with proof.</div>
               </>
             )}
           </div>
@@ -798,7 +825,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
           </div>
 
           {/* Print-only Gallery Page */}
-          {claim.items.some(i => i.receipt) && (
+          {claim.items.some(i => i.receipt || (i.receipts && i.receipts.length > 0)) && (
             <>
               <div className="no-print border-t border-dashed border-slate-300 my-6 relative">
                 <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
@@ -811,29 +838,33 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 </h3>
                 <div className="space-y-4">
                   {claim.items.map((item, index) => {
-                    const imgData = getReceiptImage(item.receipt);
-                    if (!imgData) return null;
-                    return (
-                      <div key={index} className="page-break-inside-avoid border border-slate-300 rounded p-3 flex flex-col gap-1.5 bg-slate-50/50">
-                        <div className="text-[11px] font-bold text-slate-800">
-                          Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} ({formatDate(item.date)})
+                    const receipts = getItemReceipts(item);
+                    if (receipts.length === 0) return null;
+                    return receipts.map((rcpt, rcptIdx) => {
+                      const imgData = getReceiptImage(rcpt);
+                      if (!imgData) return null;
+                      return (
+                        <div key={`${index}-${rcptIdx}`} className="page-break-inside-avoid border border-slate-300 rounded p-3 flex flex-col gap-1.5 bg-slate-50/50">
+                          <div className="text-[11px] font-bold text-slate-800">
+                            Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} ({formatDate(item.date)}) {receipts.length > 1 ? `[File ${rcptIdx + 1}]` : ''}
+                          </div>
+                          <div className="flex justify-center bg-white p-2 border border-slate-200 rounded max-h-[280px] overflow-hidden">
+                            {imgData.startsWith('data:application/pdf') ? (
+                              <div className="flex flex-col items-center justify-center gap-1.5 text-slate-500 py-4">
+                                <FileText className="w-8 h-8 text-cyan-600" />
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-center">PDF Proof Attached (Please refer to electronic submission)</span>
+                              </div>
+                            ) : (
+                              <img 
+                                src={imgData} 
+                                alt={`Receipt row ${index + 1} proof ${rcptIdx + 1}`} 
+                                className="max-h-[260px] w-auto object-contain"
+                              />
+                            )}
+                          </div>
                         </div>
-                        <div className="flex justify-center bg-white p-2 border border-slate-200 rounded max-h-[280px] overflow-hidden">
-                          {imgData.startsWith('data:application/pdf') ? (
-                            <div className="flex flex-col items-center justify-center gap-1.5 text-slate-500 py-4">
-                              <FileText className="w-8 h-8 text-cyan-600" />
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-center">PDF Proof Attached (Please refer to electronic submission)</span>
-                            </div>
-                          ) : (
-                            <img 
-                              src={imgData} 
-                              alt={`Receipt row ${index + 1}`} 
-                              className="max-h-[260px] w-auto object-contain"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    );
+                      );
+                    });
                   })}
                 </div>
               </div>
@@ -846,45 +877,48 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       {/* ========================================================== */}
       {/* PROOF GALLERY - Hidden during print */}
       {/* ========================================================== */}
-      {claim.items.some(i => i.receipt) && (
+      {claim.items.some(i => i.receipt || (i.receipts && i.receipts.length > 0)) && (
         <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800 p-6 shadow-xl space-y-4 no-print">
           <h3 className="font-bold text-slate-100 flex items-center gap-2">
             <ImageIcon className="w-5 h-5 text-blue-400" />
-            Uploaded Proof ({claim.items.filter(i => i.receipt).length})
+            Uploaded Proof ({claim.items.reduce((acc, i) => acc + getItemReceipts(i).length, 0)})
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {claim.items.map((item, index) => {
-              const imgData = getReceiptImage(item.receipt);
-              if (!imgData) return null;
+              const receipts = getItemReceipts(item);
+              return receipts.map((rcpt, rcptIdx) => {
+                const imgData = getReceiptImage(rcpt);
+                if (!imgData) return null;
 
-              return (
-                <div 
-                  key={index} 
-                  className="bg-slate-950 p-2 rounded-xl border border-slate-800 flex flex-col gap-2 group cursor-pointer hover:border-cyan-500/50 transition-colors"
-                  onClick={() => setReceiptModalUrl(imgData)}
-                >
-                  <div className="aspect-[3/4] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center relative p-3">
-                    {imgData.startsWith('data:application/pdf') ? (
-                      <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
-                        <FileText className="w-10 h-10 text-cyan-400" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-center">PDF Proof</span>
+                return (
+                  <div 
+                    key={`${index}-${rcptIdx}`} 
+                    className="bg-slate-950 p-2 rounded-xl border border-slate-800 flex flex-col gap-2 group cursor-pointer hover:border-cyan-500/50 transition-colors"
+                    onClick={() => setReceiptModalUrl(imgData)}
+                  >
+                    <div className="aspect-[3/4] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center relative p-3">
+                      {imgData.startsWith('data:application/pdf') ? (
+                        <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
+                          <FileText className="w-10 h-10 text-cyan-400" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-center">PDF Proof</span>
+                        </div>
+                      ) : (
+                        <img 
+                          src={imgData} 
+                          alt={`Proof row ${index + 1} proof ${rcptIdx + 1}`} 
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <span className="text-xs bg-slate-900/80 px-2 py-1 rounded border border-slate-700 text-slate-200">Expand</span>
                       </div>
-                    ) : (
-                      <img 
-                        src={imgData} 
-                        alt={`Proof row ${index + 1}`} 
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <span className="text-xs bg-slate-900/80 px-2 py-1 rounded border border-slate-700 text-slate-200">Expand</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-semibold truncate px-1">
+                      Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} {receipts.length > 1 ? `(#${rcptIdx + 1})` : ''}
                     </div>
                   </div>
-                  <div className="text-[10px] text-slate-400 font-semibold truncate px-1">
-                    Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'}
-                  </div>
-                </div>
-              );
+                );
+              });
             })}
           </div>
         </div>

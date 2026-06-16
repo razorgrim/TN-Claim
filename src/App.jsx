@@ -356,7 +356,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#080d1a] text-slate-100 flex flex-col">
         <header className="bg-slate-900/40 border-b border-slate-800/80">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-3">
+          <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center gap-3">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
             <span className="font-display font-extrabold text-sm tracking-wider">
               TOTAL NEUTRON SOLUTIONS
@@ -389,7 +389,7 @@ export default function App() {
 
       {/* Header Panel - Hidden during print */}
       <header className="no-print bg-slate-900/80 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
           {/* Logo / Corporate Identity */}
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
@@ -420,7 +420,7 @@ export default function App() {
       </header>
 
       {/* Main Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-none w-full mx-auto px-4 sm:px-6 lg:px-10 py-8">
         
         {/* Navigation Tabs for Staff View - Hidden during print */}
         {user.role === 'staff' && currentTab !== 'new-ot' && currentTab !== 'new-general' && currentTab !== 'new-others' && currentTab !== 'view' && (
@@ -540,7 +540,7 @@ export default function App() {
 
       {/* Footer - Hidden during print */}
       <footer className="no-print bg-slate-950/40 border-t border-slate-900/60 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-10">
           <p>© {new Date().getFullYear()} Total Neutron Solution Sdn Bhd. All rights reserved.</p>
         </div>
       </footer>
