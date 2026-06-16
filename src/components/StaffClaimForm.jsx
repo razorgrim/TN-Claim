@@ -9,7 +9,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       return draftClaim.items.map(item => {
         const receipts = item.receipts || (item.receipt ? [item.receipt] : []);
         const distance = item.mileageDistance || 0;
-        const cameBack = item.cameBackToOffice || 'yes';
+        const cameBack = item.cameBackToOffice || 'no';
         const deduction = distance > 0 ? (cameBack === 'no' ? 15 : 30) : 0;
         const netMil = Math.max(0, distance - deduction);
         return {
@@ -30,7 +30,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: 'bike',
-        cameBackToOffice: 'yes',
+        cameBackToOffice: 'no',
         mileageDistance: 0,
         mileageDeduction: 0,
         mileageNet: 0,
@@ -144,7 +144,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: lastItem.date || new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: lastItem.vehicle || 'bike',
-        cameBackToOffice: lastItem.cameBackToOffice || 'yes',
+        cameBackToOffice: lastItem.cameBackToOffice || 'no',
         mileageDistance: 0,
         mileageDeduction: 0,
         mileageNet: 0,
@@ -166,7 +166,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: 'bike',
-        cameBackToOffice: 'yes',
+        cameBackToOffice: 'no',
         mileageDistance: 0,
         mileageDeduction: 0,
         mileageNet: 0,
@@ -392,12 +392,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   {/* Return to Office Dropdown */}
                   <td className="px-2 py-3 bg-slate-800/[0.04]">
                     <select
-                      value={item.cameBackToOffice || 'yes'}
+                      value={item.cameBackToOffice || 'no'}
                       onChange={(e) => handleRowChange(index, 'cameBackToOffice', e.target.value)}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
                     >
-                      <option value="yes">Yes (Deduct 30km)</option>
-                      <option value="no">No (Deduct 15km)</option>
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
                     </select>
                   </td>
 
@@ -593,12 +593,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <div>
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Return to Office?</label>
                   <select
-                    value={item.cameBackToOffice || 'yes'}
+                    value={item.cameBackToOffice || 'no'}
                     onChange={(e) => handleRowChange(index, 'cameBackToOffice', e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
                   >
-                    <option value="yes">Yes (Deduct 30km)</option>
-                    <option value="no">No (Deduct 15km)</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
                   </select>
                 </div>
               </div>
