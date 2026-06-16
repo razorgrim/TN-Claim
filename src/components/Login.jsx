@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Shield } from 'lucide-react';
 
-export default function Login({ onLoginSuccess, onNavigateToRegister }) {
+export default function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -116,18 +116,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
           </button>
         </form>
 
-        {/* Footer Nav */}
-        <div className="mt-8 pt-6 border-t border-slate-800/80 text-center text-xs">
-          <p className="text-slate-400">
-            Don't have an account?{' '}
-            <button
-              onClick={onNavigateToRegister}
-              className="text-cyan-400 hover:text-cyan-300 font-bold hover:underline bg-transparent border-none outline-none cursor-pointer"
-            >
-              Register here
-            </button>
-          </p>
-        </div>
+
       </div>
     </div>
   );

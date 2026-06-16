@@ -8,7 +8,6 @@ import { requireAuth, requireAdmin } from '../middleware/auth.js';
 const router = express.Router();
 
 // Input Validation Schemas
-});
 
 const adminRegisterSchema = Joi.object({
   name: Joi.string().min(3).max(100).required().messages({

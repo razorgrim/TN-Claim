@@ -82,7 +82,6 @@ export default function App() {
       setClaims([]);
       setActiveClaim(null);
       setCurrentTab('dashboard');
-      setAuthView('login');
     } catch (err) {
       console.error('Logout failed:', err);
     }
