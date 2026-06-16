@@ -33,9 +33,17 @@ export async function initializeDatabase() {
     queueLimit: 0
   });
 
+  pool.on('error', (err) => {
+    console.error('Database pool error:', err);
+  });
+
   // 3. Create tables and seed data
   try {
     const connection = await pool.getConnection();
+    
+    // Support large payloads (image/PDF base64 attachments) without connection resets
+    await connection.query('SET SESSION max_allowed_packet = 67108864');
+    await connection.query('SET GLOBAL max_allowed_packet = 67108864');
 
     // Create users table
     await connection.query(`
