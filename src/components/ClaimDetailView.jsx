@@ -82,6 +82,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
   };
 
   const currentTotals = calculateTotals(reviewItems, claim.type);
+  const approvedItems = reviewItems.filter(item => item.approved === true);
 
   const handleApprove = () => {
     const computedTotals = calculateTotals(reviewItems, claim.type);
