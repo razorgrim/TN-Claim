@@ -598,10 +598,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
         <div className="print-area bg-white text-slate-900 rounded-2xl p-4 md:p-6 border border-slate-200 shadow-xl print:border-none print:shadow-none print:p-0">
           
           {/* Corporate Header */}
-          <div className="flex flex-col md:flex-row items-center border-b-2 border-slate-900 pb-3 mb-3 gap-3">
+          <div className="flex items-center border-b-2 border-slate-900 pb-3 mb-3 gap-3 print:border-black print-border-dark">
             {/* Logo */}
             <img src="/logo.png" alt="Total Neutron Logo" className="w-12 h-12 object-contain shrink-0" />
-            <div className="text-center md:text-left print-text-dark">
+            <div className="text-left print-text-dark">
               <h2 className="text-base font-bold tracking-tight text-slate-900">
                 TOTAL NEUTRON SOLUTION SDN BHD <span className="text-xs font-normal text-slate-500 print:text-black">(1064906-M)</span>
               </h2>
