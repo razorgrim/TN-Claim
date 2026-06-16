@@ -38,8 +38,8 @@ app.use(cors({
 }));
 
 // 3. PARSERS
-app.use(express.json({ limit: '50mb' })); // support base64 images upload
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '100mb' })); // support base64 images upload
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 app.use(cookieParser());
 
 // 4. RATE LIMITING (Brute-force protection)
