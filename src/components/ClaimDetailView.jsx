@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   ArrowLeft, Check, X, Printer, Calendar, FileText, CheckCircle2, AlertCircle, XCircle, ImageIcon, Trash2, Archive
 } from 'lucide-react';
 const formatDate = (dateStr) => {
@@ -57,7 +57,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       }, 0);
       const totalOutstationAmount = approvedItems.reduce((sum, item) => sum + (item.outstationAmount || 0), 0);
       const grandTotal = approvedItems.reduce((sum, item) => sum + (item.total !== undefined ? item.total : ((item.mileageAmount || 0) + (item.toll || 0) + (item.medical || 0) + (item.outstationAmount || 0))), 0);
-      
+
       return {
         mileageDistance: totalDistance,
         mileageAmount: totalMileageRM,
@@ -119,7 +119,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
 
   return (
     <div className="space-y-6 max-w-none mx-auto px-2 md:px-6">
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         /* General styling for the print area (both screen preview and print) */
         .print-area {
           font-size: 12px !important;
@@ -228,11 +229,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
             <button
               onClick={handlePrint}
               disabled={!allRowsApproved}
-              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all border ${
-                !allRowsApproved
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all border ${!allRowsApproved
                   ? 'bg-slate-800/40 text-slate-500 border-slate-800 cursor-not-allowed opacity-50'
                   : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 active:scale-95 cursor-pointer'
-              }`}
+                }`}
             >
               <Printer className={`w-4 h-4 ${!allRowsApproved ? 'text-slate-500' : 'text-cyan-400'}`} />
               Print / Save PDF
@@ -289,11 +289,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
 
       {/* View Review Status (Staff / Completed Review) - Hidden during print */}
       {claim.status !== 'Pending' && (
-        <div className={`p-4 rounded-xl border no-print flex items-center justify-between gap-4 ${
-          claim.status === 'Approved' 
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+        <div className={`p-4 rounded-xl border no-print flex items-center justify-between gap-4 ${claim.status === 'Approved'
+            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
             : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
-        }`}>
+          }`}>
           <div className="flex items-center gap-3">
             {claim.status === 'Approved' ? (
               <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
@@ -319,11 +318,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
           <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 space-y-4">
             <h3 className="font-bold text-slate-100 text-lg border-b border-slate-800 pb-3 flex justify-between items-center">
               <span>Claim Summary - {claim.type === 'ot' ? 'Overtime' : claim.type === 'others' ? 'Others' : 'General'}</span>
-              <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase ${
-                claim.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                claim.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-              }`}>
+              <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase ${claim.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                  claim.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                    'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                }`}>
                 {claim.status}
               </span>
             </h3>
@@ -601,7 +599,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       ) : (
         /* Staff print-area replica view */
         <div className="print-area bg-white text-slate-900 rounded-2xl p-4 md:p-6 border border-slate-200 shadow-xl print:border-none print:shadow-none print:p-0">
-          
+
           {/* Corporate Header */}
           <div className="flex items-center border-b-2 border-slate-900 pb-3 mb-3 gap-3 print:border-black print-border-dark">
             {/* Logo */}
@@ -846,7 +844,6 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               </>
             ) : (
               <>
-                <div>- MILEAGE CLAIM: Staff must deduct 15KM per trip from office when entering the mileage.</div>
                 <div>- PROOF / RECEIPTS: ALL claim rows MUST be attached with proof.</div>
               </>
             )}
@@ -899,9 +896,9 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                                 <span className="text-[9px] font-bold uppercase tracking-wider text-center">PDF Proof Attached (Please refer to electronic submission)</span>
                               </div>
                             ) : (
-                              <img 
-                                src={imgData} 
-                                alt={`Receipt row ${index + 1} proof ${rcptIdx + 1}`} 
+                              <img
+                                src={imgData}
+                                alt={`Receipt row ${index + 1} proof ${rcptIdx + 1}`}
                                 className="max-h-[260px] w-auto object-contain"
                               />
                             )}
@@ -935,8 +932,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 if (!imgData) return null;
 
                 return (
-                  <div 
-                    key={`${index}-${rcptIdx}`} 
+                  <div
+                    key={`${index}-${rcptIdx}`}
                     className="bg-slate-950 p-2 rounded-xl border border-slate-800 flex flex-col gap-2 group cursor-pointer hover:border-cyan-500/50 transition-colors"
                     onClick={() => setReceiptModalUrl(imgData)}
                   >
@@ -947,9 +944,9 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                           <span className="text-[10px] font-bold uppercase tracking-wider text-center">PDF Proof</span>
                         </div>
                       ) : (
-                        <img 
-                          src={imgData} 
-                          alt={`Proof row ${index + 1} proof ${rcptIdx + 1}`} 
+                        <img
+                          src={imgData}
+                          alt={`Proof row ${index + 1} proof ${rcptIdx + 1}`}
                           className="max-w-full max-h-full object-contain"
                         />
                       )}
@@ -971,9 +968,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       {/* Expanded Proof Modal - Hidden during print */}
       {receiptModalUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm no-print">
-          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative animate-scale-up ${
-            isPdf(receiptModalUrl) ? 'max-w-3xl' : 'max-w-md'
-          }`}>
+          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative animate-scale-up ${isPdf(receiptModalUrl) ? 'max-w-3xl' : 'max-w-md'
+            }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
                 <FileText className="w-5 h-5 text-cyan-400" /> Proof Preview
@@ -993,9 +989,9 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   className="w-full h-[400px] rounded-lg border-none bg-white"
                 />
               ) : (
-                <img 
-                  src={receiptModalUrl} 
-                  alt="Proof attachment" 
+                <img
+                  src={receiptModalUrl}
+                  alt="Proof attachment"
                   className="max-w-full h-auto object-contain rounded-lg"
                 />
               )}
