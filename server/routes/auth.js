@@ -91,6 +91,7 @@ router.post('/login', async (req, res) => {
     // Fetch user
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (users.length === 0) {
+      console.warn(`[Login Auth] Failed: No user found with email "${email}"`);
       return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
@@ -99,6 +100,7 @@ router.post('/login', async (req, res) => {
     // Check password
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
+      console.warn(`[Login Auth] Failed: Password mismatch for email "${email}". Input password length: ${password.length}. Stored hash: "${user.password_hash}"`);
       return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
