@@ -266,8 +266,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                 <th className="px-3 py-3 w-[95px]">Check In</th>
                 <th className="px-3 py-3 w-[95px]">Check Out</th>
                 <th className="px-3 py-3 w-[120px]">Day Type</th>
-                <th className="px-3 py-3 w-[140px]">Location</th>
-                <th className="px-3 py-3">OT Reason (Compulsory)</th>
+                <th className="px-3 py-3 w-[220px]">Location</th>
+                <th className="px-3 py-3 w-[220px]">OT Reason (Compulsory)</th>
                 <th className="px-3 py-3 w-[150px]">Authorized By</th>
                 <th className="px-3 py-3 w-[120px]">Proof</th>
                 <th className="px-3 py-3 w-[70px] text-center">OT (Hr)</th>

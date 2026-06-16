@@ -457,10 +457,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
                       <th className="px-4 py-3">Date</th>
                       <th className="px-4 py-3">Journey/Description</th>
-                      <th className="px-4 py-3 text-center">Outstation Type</th>
-                      <th className="px-4 py-3 text-right">Outstation Amount</th>
                       <th className="px-4 py-3 text-center">Mileage (KM)</th>
                       <th className="px-4 py-3 text-right">Mileage Amount</th>
+                      <th className="px-4 py-3 text-center">Outstation Type</th>
+                      <th className="px-4 py-3 text-right">Outstation Amount</th>
                       <th className="px-4 py-3 text-right">Toll</th>
                       <th className="px-4 py-3 text-right">Medical</th>
                       <th className="px-4 py-3 text-right">Row Total</th>
@@ -473,10 +473,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                       <tr key={index} className="hover:bg-slate-800/25 transition-colors">
                         <td className="px-4 py-3.5 font-medium text-slate-200">{item.date}</td>
                         <td className="px-4 py-3.5">{item.journey}</td>
-                        <td className="px-4 py-3.5 text-center capitalize">{item.outstationType || '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono">{item.outstationAmount > 0 ? `RM ${item.outstationAmount.toFixed(2)}` : '-'}</td>
                         <td className="px-4 py-3.5 text-center font-mono">{item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono">{item.mileageAmount > 0 ? `RM ${item.mileageAmount.toFixed(2)}` : '-'}</td>
+                        <td className="px-4 py-3.5 text-center capitalize">{item.outstationType || '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono">{item.outstationAmount > 0 ? `RM ${item.outstationAmount.toFixed(2)}` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono">{item.toll > 0 ? `RM ${item.toll.toFixed(2)}` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono">{item.medical > 0 ? `RM ${item.medical.toFixed(2)}` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-200">
@@ -514,10 +514,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tfoot>
                     <tr className="bg-slate-950/40 font-bold border-t border-slate-800">
                       <td className="px-4 py-3 text-slate-400" colSpan={2}>Totals (Approved Rows Only)</td>
-                      <td className="px-4 py-3"></td>
-                      <td className="px-4 py-3 text-right font-mono">{currentTotals.outstationAmount > 0 ? `RM ${currentTotals.outstationAmount.toFixed(2)}` : '-'}</td>
                       <td className="px-4 py-3 text-center font-mono">{currentTotals.mileageDistance || '-'}</td>
                       <td className="px-4 py-3 text-right font-mono">RM {currentTotals.mileageAmount.toFixed(2)}</td>
+                      <td className="px-4 py-3"></td>
+                      <td className="px-4 py-3 text-right font-mono">{currentTotals.outstationAmount > 0 ? `RM ${currentTotals.outstationAmount.toFixed(2)}` : '-'}</td>
                       <td className="px-4 py-3 text-right font-mono">{currentTotals.toll > 0 ? `RM ${currentTotals.toll.toFixed(2)}` : '-'}</td>
                       <td className="px-4 py-3 text-right font-mono">{currentTotals.medical > 0 ? `RM ${currentTotals.medical.toFixed(2)}` : '-'}</td>
                       <td className="px-4 py-3 text-right font-mono text-emerald-400 text-sm">RM {currentTotals.grandTotal.toFixed(2)}</td>
@@ -679,17 +679,17 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-900 print:border-black print-border-dark">
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[85px] print:border-black print-border-dark" rowSpan={2}>Date</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 print:border-black print-border-dark" rowSpan={2}>Journey/Description</th>
-                    <th className="px-1.5 py-1.5 border-r border-slate-900 text-center w-[110px] print:border-black print-border-dark" colSpan={2}>Outstation</th>
                     <th className="px-1.5 py-1 border-r border-slate-900 text-center w-[130px] print:border-black print-border-dark" colSpan={2}>Mileage</th>
+                    <th className="px-1.5 py-1.5 border-r border-slate-900 text-center w-[110px] print:border-black print-border-dark" colSpan={2}>Outstation</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[65px] print:border-black print-border-dark text-center" rowSpan={2}>Toll</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[65px] print:border-black print-border-dark text-center" rowSpan={2}>Medical</th>
                     <th className="px-1.5 py-1.5 text-right w-[90px]" rowSpan={2}>Total (RM)</th>
                   </tr>
                   <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-900 print:border-black print-border-dark">
-                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[50px] print:border-black print-border-dark">Type</th>
-                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[65px] print:border-black print-border-dark">(RM)</th>
                     <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[70px] print:border-black print-border-dark">No. of km</th>
                     <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[60px] print:border-black print-border-dark">(RM)</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[50px] print:border-black print-border-dark">Type</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[65px] print:border-black print-border-dark">(RM)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-900 divide-y-2 border-b border-slate-900 print:border-black print-border-dark">
@@ -699,17 +699,17 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                       <tr key={index} className={`odd:bg-slate-50/40 ${isRejected ? 'bg-rose-100/60 line-through text-rose-800 print:bg-rose-100 print:text-rose-950 font-medium' : ''}`}>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{item.date}</td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark">{item.journey}</td>
-                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-medium capitalize text-[10px]">
-                          {item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : '-')}
-                        </td>
-                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono">
-                          {item.outstationAmount > 0 ? item.outstationAmount.toFixed(2) : '-'}
-                        </td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[10px]">
                           {item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}
                         </td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono">
                           {item.mileageAmount > 0 ? item.mileageAmount.toFixed(2) : '-'}
+                        </td>
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-medium capitalize text-[10px]">
+                          {item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : '-')}
+                        </td>
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono">
+                          {item.outstationAmount > 0 ? item.outstationAmount.toFixed(2) : '-'}
                         </td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono">
                           {item.toll > 0 ? item.toll.toFixed(2) : '-'}
@@ -727,12 +727,12 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 <tfoot>
                   <tr className="bg-slate-100 font-bold border-t border-slate-900 print:border-black print-border-dark">
                     <td className="px-1.5 py-1.5 border-r border-slate-900 uppercase text-center" colSpan={2}>Totals</td>
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono">{claim.totals.mileageDistance || '-'}</td>
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">RM {claim.totals.mileageAmount.toFixed(2)}</td>
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono">-</td>
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">
                       {claim.totals.outstationAmount > 0 ? `RM ${claim.totals.outstationAmount.toFixed(2)}` : '-'}
                     </td>
-                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono">{claim.totals.mileageDistance || '-'}</td>
-                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">RM {claim.totals.mileageAmount.toFixed(2)}</td>
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">
                       {claim.totals.toll > 0 ? `RM ${claim.totals.toll.toFixed(2)}` : '-'}
                     </td>

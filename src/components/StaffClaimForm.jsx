@@ -280,10 +280,10 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <th className="px-3 py-3 w-[140px]">Date</th>
                 <th className="px-3 py-3">Journey / Description</th>
                 <th className="px-3 py-3 w-[100px]">Vehicle</th>
-                <th className="px-3 py-3 w-[120px]">Outstation Type</th>
-                <th className="px-3 py-3 w-[95px]">Outstation (RM)</th>
                 <th className="px-3 py-3 w-[90px]">Mil (KM)</th>
                 <th className="px-3 py-3 w-[90px]">Mil (RM)</th>
+                <th className="px-3 py-3 w-[120px]">Outstation Type</th>
+                <th className="px-3 py-3 w-[95px]">Outstation (RM)</th>
                 <th className="px-3 py-3 w-[90px]">Toll (RM)</th>
                 <th className="px-3 py-3 w-[90px]">Medical (RM)</th>
                 <th className="px-3 py-3 w-[120px]">Proof</th>
@@ -328,24 +328,6 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     </select>
                   </td>
 
-                  {/* Outstation Type */}
-                  <td className="px-2 py-3">
-                    <select
-                      value={item.outstationType || 'none'}
-                      onChange={(e) => handleRowChange(index, 'outstationType', e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
-                    >
-                      <option value="none">None</option>
-                      <option value="daily">Daily</option>
-                      <option value="sleepover">Sleepover</option>
-                    </select>
-                  </td>
-
-                  {/* Outstation (Calculated RM) */}
-                  <td className="px-2 py-3 text-slate-400 font-mono text-xs">
-                    RM {item.outstationAmount.toFixed(2)}
-                  </td>
-
                   {/* Mileage (Distance) */}
                   <td className="px-2 py-3">
                     <div className="relative">
@@ -370,6 +352,24 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   {/* Mileage (Calculated RM) */}
                   <td className="px-2 py-3 text-slate-400 font-mono text-xs">
                     RM {item.mileageAmount.toFixed(2)}
+                  </td>
+
+                  {/* Outstation Type */}
+                  <td className="px-2 py-3">
+                    <select
+                      value={item.outstationType || 'none'}
+                      onChange={(e) => handleRowChange(index, 'outstationType', e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
+                    >
+                      <option value="none">None</option>
+                      <option value="daily">Daily</option>
+                      <option value="sleepover">Sleepover</option>
+                    </select>
+                  </td>
+
+                  {/* Outstation (Calculated RM) */}
+                  <td className="px-2 py-3 text-slate-400 font-mono text-xs">
+                    RM {item.outstationAmount.toFixed(2)}
                   </td>
 
                   {/* Toll */}
