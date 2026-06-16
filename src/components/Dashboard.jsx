@@ -5,12 +5,19 @@ import {
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
-  const parts = dateStr.split('-');
+  const cleanDate = dateStr.split('T')[0].split(' ')[0];
+  const parts = cleanDate.split('-');
   if (parts.length === 3 && parts[0].length === 4) {
     const year = parts[0].slice(-2);
     const month = parts[1];
     const day = parts[2];
-    return `${day}-${month}-${year}`;
+    const malayMonths = {
+      '01': 'JAN', '02': 'FEB', '03': 'MAC', '04': 'APR',
+      '05': 'MEI', '06': 'JUN', '07': 'JUL', '08': 'OGO',
+      '09': 'SEP', '10': 'OKT', '11': 'NOV', '12': 'DIS'
+    };
+    const monthLabel = malayMonths[month] || month;
+    return `${day} ${monthLabel} ${year}`;
   }
   return dateStr;
 };
