@@ -11,13 +11,13 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         const distance = item.mileageDistance || 0;
         const cameBack = item.cameBackToOffice || 'no';
         const deduction = distance > 0 ? (cameBack === 'no' ? 15 : 30) : 0;
-        const netMil = Math.max(0, distance - deduction);
+        const netMil = Math.round(Math.max(0, distance - deduction) * 100) / 100;
         return {
           ...item,
           vehicle: item.vehicle || 'bike',
           cameBackToOffice: cameBack,
           mileageDeduction: item.mileageDeduction !== undefined ? item.mileageDeduction : deduction,
-          mileageNet: item.mileageNet !== undefined ? item.mileageNet : netMil,
+          mileageNet: item.mileageNet !== undefined ? Math.round(parseFloat(item.mileageNet) * 100) / 100 : netMil,
           outstationType: item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : 'none'),
           outstationAmount: item.outstationAmount || 0,
           receipts: receipts,
@@ -56,7 +56,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     const rate = item.vehicle === 'bike' ? 0.40 : 0.50;
     const distance = parseFloat(item.mileageDistance) || 0;
     const deduction = distance > 0 ? (item.cameBackToOffice === 'no' ? 15 : 30) : 0;
-    const netMil = Math.max(0, distance - deduction);
+    const netMil = Math.round(Math.max(0, distance - deduction) * 100) / 100;
     const milAmount = netMil * rate;
     const toll = parseFloat(item.toll) || 0;
     const medical = parseFloat(item.medical) || 0;
@@ -303,7 +303,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
               <span className="text-slate-300 text-xs">
                 Total: <span className="font-bold">{totalRawDistance} km</span> | 
                 Deducted: <span className="text-slate-400 font-bold">-{totalDeductedDistance} km</span> | 
-                Net: <span className="text-cyan-400 font-bold">{totalDistance} km</span>
+                Net: <span className="text-cyan-400 font-bold">{totalDistance.toFixed(2)} km</span>
               </span>
             </div>
             <div className="bg-slate-900/60 px-6 py-3 rounded-xl border border-slate-800 flex items-center justify-center text-center">
@@ -408,7 +408,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
 
                   {/* Net Mileage (KM) */}
                   <td className="px-2 py-3 text-center text-slate-200 font-mono text-xs font-bold bg-slate-800/[0.04]">
-                    {item.mileageNet || 0} km
+                    {(item.mileageNet || 0).toFixed(2)} km
                   </td>
 
                   {/* Mileage (Calculated RM) */}
@@ -610,7 +610,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 </div>
                 <div className="bg-slate-900/40 p-2 rounded border border-slate-800">
                   <span className="text-[8px] text-slate-500 uppercase block">Net KM</span>
-                  <span className="text-xs font-mono font-bold text-cyan-400">{item.mileageNet || 0} km</span>
+                  <span className="text-xs font-mono font-bold text-cyan-400">{(item.mileageNet || 0).toFixed(2)} km</span>
                 </div>
                 <div className="bg-slate-900/40 p-2 rounded border border-slate-800">
                   <span className="text-[8px] text-slate-500 uppercase block">Mileage RM</span>
