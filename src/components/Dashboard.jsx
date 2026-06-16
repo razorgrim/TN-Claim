@@ -136,25 +136,25 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
         {role === 'staff' && (
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => onStartClaim('ot')}
-              className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/10 active:scale-95 transition-all cursor-pointer"
-            >
-              <Plus className="w-5 h-5 stroke-[2.5]" />
-              New OT Claim
-            </button>
-            <button
               onClick={() => onStartClaim('general')}
               className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/10 active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-5 h-5 stroke-[2.5]" />
-              New Staff Claim
+              General claim
+            </button>
+            <button
+              onClick={() => onStartClaim('ot')}
+              className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/10 active:scale-95 transition-all cursor-pointer"
+            >
+              <Plus className="w-5 h-5 stroke-[2.5]" />
+              Ot claim
             </button>
             <button
               onClick={() => onStartClaim('others')}
               className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/10 active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-5 h-5 stroke-[2.5]" />
-              New Others Claim
+              Others claim
             </button>
           </div>
         )}
