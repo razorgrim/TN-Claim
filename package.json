@@ -10,7 +10,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "db:init": "node server/init-db.js"
+    "db:init": "node server/init-db.js",
+    "db:reset": "node server/reset-db-users.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.1",

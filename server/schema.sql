@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS claims (
 ) ENGINE=InnoDB;
 
 -- 3. Seed default admin & staff users (Default password: my1p@ssw0rd)
--- Pre-computed bcrypt hash for 'my1p@ssw0rd' is: $2a$10$w2GepU4vDkh98l40q8lQNeBw9T1Yc9y8Kz7gYy7tN1P2oGvH3Y8w2a
+-- Pre-computed bcrypt hash for 'my1p@ssw0rd' is: $2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS
 INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate)
 VALUES 
-(1, 'Finance Admin', 'admin@neutron.com', '$2a$10$w2GepU4vDkh98l40q8lQNeBw9T1Yc9y8Kz7gYy7tN1P2oGvH3Y8w2a', '900101-14-1111', '+60 3-8320 8306', 'Finance & HR', 'admin', 0.60),
-(2, 'Ahmad Bin Razak', 'staff@neutron.com', '$2a$10$w2GepU4vDkh98l40q8lQNeBw9T1Yc9y8Kz7gYy7tN1P2oGvH3Y8w2a', '940815-14-5321', '+60 12-345 6789', 'Technical Operations', 'staff', 0.60)
+(1, 'Finance Admin', 'admin@neutron.com', '$2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS', '900101-14-1111', '+60 3-8320 8306', 'Finance & HR', 'admin', 0.60),
+(2, 'Ahmad Bin Razak', 'staff@neutron.com', '$2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS', '940815-14-5321', '+60 12-345 6789', 'Technical Operations', 'staff', 0.60)
 ON DUPLICATE KEY UPDATE id=id;
