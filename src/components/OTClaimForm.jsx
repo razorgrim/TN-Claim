@@ -1,6 +1,43 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Calendar, Clock, MapPin, CheckCircle, AlertTriangle, FileText, ArrowLeft, Upload, Image as ImageIcon } from 'lucide-react';
 
+// Helper to check if a YYYY-MM-DD date falls on a weekend (Saturday or Sunday)
+const getIsWeekendForDate = (dateStr) => {
+  if (!dateStr) return false;
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dayOfWeek = new Date(y, m - 1, d).getDay();
+  return dayOfWeek === 0 || dayOfWeek === 6;
+};
+
+// Calculate OT hours for a specific row
+const calculateOT = (checkIn, checkOut, isWeekend) => {
+  if (!checkIn || !checkOut) return { weekday: 0, weekend: 0 };
+
+  const [inH, inM] = checkIn.split(':').map(Number);
+  let [outH, outM] = checkOut.split(':').map(Number);
+
+  // If check out is earlier than check in, assume it went past midnight (next day)
+  if (outH < inH || (outH === inH && outM < inM)) {
+    outH += 24;
+  }
+
+  const totalHours = (outH * 60 + outM - (inH * 60 + inM)) / 60;
+  
+  // Rule:
+  // Weekday: OT calculated after 9 working hours (Total Hours - 9)
+  // Weekend: OT claimed fully (all hours worked count as OT)
+  const otHours = isWeekend ? totalHours : Math.max(0, totalHours - 9);
+
+  // Round to 1 decimal place or keep as float
+  const roundedOt = Math.round(otHours * 10) / 10;
+
+  if (isWeekend) {
+    return { weekday: 0, weekend: roundedOt };
+  } else {
+    return { weekday: roundedOt, weekend: 0 };
+  }
+};
+
 export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, onSubmitClaim, onCancel }) {
   const [items, setItems] = useState(() => {
     if (draftClaim && draftClaim.items && draftClaim.items.length > 0) {
@@ -9,17 +46,20 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
         receipt: item.receipt || ''
       }));
     }
+    const todayStr = new Date().toISOString().split('T')[0];
+    const isTodayWeekend = getIsWeekendForDate(todayStr);
+    const ot = calculateOT('09:00', '19:00', isTodayWeekend);
     return [
       {
-        date: new Date().toISOString().split('T')[0],
+        date: todayStr,
         checkIn: '09:00',
         checkOut: '19:00',
-        isWeekend: false,
+        isWeekend: isTodayWeekend,
         location: 'Kuala Lumpur Office',
         reason: '',
         authorization: '',
-        weekdayHours: 1, // (10 total hrs - 9 standard hrs = 1 OT hr)
-        weekendHours: 0,
+        weekdayHours: ot.weekday,
+        weekendHours: ot.weekend,
         receipt: ''
       }
     ];
@@ -28,38 +68,17 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
   const [validationError, setValidationError] = useState('');
   const [receiptPreviewUrl, setReceiptPreviewUrl] = useState(null);
 
-  // Calculate OT hours for a specific row
-  const calculateOT = (checkIn, checkOut, isWeekend) => {
-    if (!checkIn || !checkOut) return { weekday: 0, weekend: 0 };
-
-    const [inH, inM] = checkIn.split(':').map(Number);
-    let [outH, outM] = checkOut.split(':').map(Number);
-
-    // If check out is earlier than check in, assume it went past midnight (next day)
-    if (outH < inH || (outH === inH && outM < inM)) {
-      outH += 24;
-    }
-
-    const totalHours = (outH * 60 + outM - (inH * 60 + inM)) / 60;
-    
-    // Rule:
-    // Weekday: OT calculated after 9 working hours (Total Hours - 9)
-    // Weekend: OT claimed fully (all hours worked count as OT)
-    const otHours = isWeekend ? totalHours : Math.max(0, totalHours - 9);
-
-    // Round to 1 decimal place or keep as float
-    const roundedOt = Math.round(otHours * 10) / 10;
-
-    if (isWeekend) {
-      return { weekday: 0, weekend: roundedOt };
-    } else {
-      return { weekday: roundedOt, weekend: 0 };
-    }
-  };
-
   const handleRowChange = (index, field, value) => {
     const updated = [...items];
     const item = { ...updated[index], [field]: value };
+
+    // Automatically detect weekend/weekday if date changes
+    if (field === 'date') {
+      item.isWeekend = getIsWeekendForDate(value);
+      const ot = calculateOT(item.checkIn, item.checkOut, item.isWeekend);
+      item.weekdayHours = ot.weekday;
+      item.weekendHours = ot.weekend;
+    }
 
     // Re-calculate OT hours if checkIn, checkOut, or isWeekend changes
     if (field === 'checkIn' || field === 'checkOut' || field === 'isWeekend') {
@@ -88,18 +107,25 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
 
   const addRow = () => {
     const lastItem = items[items.length - 1] || {};
+    const todayStr = new Date().toISOString().split('T')[0];
+    const newDate = lastItem.date || todayStr;
+    const isWeekend = getIsWeekendForDate(newDate);
+    const checkIn = lastItem.checkIn || '09:00';
+    const checkOut = lastItem.checkOut || '19:00';
+    const ot = calculateOT(checkIn, checkOut, isWeekend);
+
     setItems([
       ...items,
       {
-        date: lastItem.date || new Date().toISOString().split('T')[0],
-        checkIn: lastItem.checkIn || '09:00',
-        checkOut: lastItem.checkOut || '19:00',
-        isWeekend: lastItem.isWeekend || false,
+        date: newDate,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        isWeekend: isWeekend,
         location: lastItem.location || 'Kuala Lumpur Office',
         reason: '',
         authorization: lastItem.authorization || '',
-        weekdayHours: lastItem.weekdayHours || 1,
-        weekendHours: lastItem.weekendHours || 0,
+        weekdayHours: ot.weekday,
+        weekendHours: ot.weekend,
         receipt: ''
       }
     ]);
@@ -107,16 +133,19 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
 
   const removeRow = (index) => {
     if (items.length === 1) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const isWeekend = getIsWeekendForDate(todayStr);
+      const ot = calculateOT('09:00', '19:00', isWeekend);
       setItems([{
-        date: new Date().toISOString().split('T')[0],
+        date: todayStr,
         checkIn: '09:00',
         checkOut: '19:00',
-        isWeekend: false,
+        isWeekend: isWeekend,
         location: '',
         reason: '',
         authorization: '',
-        weekdayHours: 1,
-        weekendHours: 0,
+        weekdayHours: ot.weekday,
+        weekendHours: ot.weekend,
         receipt: ''
       }]);
     } else {
