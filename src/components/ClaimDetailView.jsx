@@ -619,7 +619,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
 
           {/* Claim Sheet Title banner */}
           <div className="bg-slate-900 text-white font-bold py-1.5 px-4 text-center rounded tracking-wider uppercase mb-3 print:bg-black print:text-white print-text-dark">
-            {claim.type === 'ot' ? 'Overtime Claim' : 'Staff Claim'}
+            {claim.type === 'ot' ? 'Overtime Claim' : claim.type === 'others' ? 'Others Claim' : 'Staff Claim'}
           </div>
 
           {/* Employee Info Grid */}
