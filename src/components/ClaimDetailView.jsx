@@ -48,7 +48,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       };
     } else {
       // general
-      const totalDistance = approvedItems.reduce((sum, item) => sum + (item.mileageDistance || 0), 0);
+      const totalDistance = approvedItems.reduce((sum, item) => sum + (item.mileageNet !== undefined ? item.mileageNet : Math.max(0, (item.mileageDistance || 0) - (item.mileageDistance > 0 ? (item.cameBackToOffice === 'no' ? 15 : 30) : 0))), 0);
       const totalMileageRM = approvedItems.reduce((sum, item) => sum + (item.mileageAmount || 0), 0);
       const totalToll = approvedItems.reduce((sum, item) => sum + (item.toll || 0), 0);
       const totalMedical = approvedItems.reduce((sum, item) => sum + (item.medical || 0), 0);
@@ -495,8 +495,11 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
                       <th className="px-4 py-3">Date</th>
                       <th className="px-4 py-3 border-l-2 border-slate-600/70 pl-4 bg-slate-800/25">Journey/Description</th>
-                      <th className="px-4 py-3 text-center bg-slate-800/25">Mileage (KM)</th>
-                      <th className="px-4 py-3 text-right bg-slate-800/25">Mileage Amount</th>
+                      <th className="px-4 py-3 text-center bg-slate-800/25 w-[75px]">Total KM</th>
+                      <th className="px-4 py-3 text-center bg-slate-800/25 w-[90px]">Return?</th>
+                      <th className="px-4 py-3 text-center bg-slate-800/25 w-[75px]">Deducted</th>
+                      <th className="px-4 py-3 text-center bg-slate-800/25 w-[75px]">Net KM</th>
+                      <th className="px-4 py-3 text-right bg-slate-800/25 w-[80px]">Mil Amount</th>
                       <th className="px-4 py-3 text-center border-l-2 border-slate-600/70 pl-4 bg-cyan-500/[0.06]">Outstation Type</th>
                       <th className="px-4 py-3 text-right bg-cyan-500/[0.06]">Outstation Amount</th>
                       <th className="px-4 py-3 text-right border-l-2 border-slate-600/70 pl-4 bg-blue-500/[0.06]">Toll</th>
@@ -512,6 +515,9 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5 font-medium text-slate-200">{formatDate(item.date)}</td>
                         <td className="px-4 py-3.5 border-l-2 border-slate-600/70 pl-3.5 bg-slate-800/[0.04]">{item.journey}</td>
                         <td className="px-4 py-3.5 text-center font-mono bg-slate-800/[0.04]">{item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}</td>
+                        <td className="px-4 py-3.5 text-center font-medium capitalize bg-slate-800/[0.04]">{item.mileageDistance > 0 ? (item.cameBackToOffice === 'no' ? 'No' : 'Yes') : '-'}</td>
+                        <td className="px-4 py-3.5 text-center font-mono text-slate-400 bg-slate-800/[0.04]">{item.mileageDistance > 0 ? `${item.mileageDeduction !== undefined ? item.mileageDeduction : (item.cameBackToOffice === 'no' ? 15 : 30)} km` : '-'}</td>
+                        <td className="px-4 py-3.5 text-center font-mono font-bold bg-slate-800/[0.04]">{item.mileageDistance > 0 ? `${item.mileageNet !== undefined ? item.mileageNet : Math.max(0, item.mileageDistance - (item.cameBackToOffice === 'no' ? 15 : 30))} km` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono bg-slate-800/[0.04]">{item.mileageAmount > 0 ? `RM ${item.mileageAmount.toFixed(2)}` : '-'}</td>
                         <td className="px-4 py-3.5 text-center capitalize border-l-2 border-slate-600/70 pl-3.5 bg-cyan-500/[0.02]">{item.outstationType || '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono bg-cyan-500/[0.02]">{item.outstationAmount > 0 ? `RM ${item.outstationAmount.toFixed(2)}` : '-'}</td>
@@ -559,7 +565,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tfoot>
                     <tr className="bg-slate-950/40 font-bold border-t border-slate-800">
                       <td className="px-4 py-3 text-slate-400" colSpan={2}>Totals (Approved Rows Only)</td>
-                      <td className="px-4 py-3 text-center font-mono">{currentTotals.mileageDistance || '-'}</td>
+                      <td className="px-4 py-3 text-center font-mono">{approvedItems.reduce((sum, item) => sum + (parseFloat(item.mileageDistance) || 0), 0) || '-'}</td>
+                      <td className="px-4 py-3 text-center font-mono">-</td>
+                      <td className="px-4 py-3 text-center font-mono">{approvedItems.reduce((sum, item) => sum + (parseFloat(item.mileageDeduction || (item.mileageDistance > 0 ? (item.cameBackToOffice === 'no' ? 15 : 30) : 0)) || 0), 0) || '-'}</td>
+                      <td className="px-4 py-3 text-center font-mono text-cyan-400">{approvedItems.reduce((sum, item) => sum + (parseFloat(item.mileageNet || Math.max(0, item.mileageDistance - (item.cameBackToOffice === 'no' ? 15 : 30))) || 0), 0) || '-'}</td>
                       <td className="px-4 py-3 text-right font-mono">RM {currentTotals.mileageAmount.toFixed(2)}</td>
                       <td className="px-4 py-3"></td>
                       <td className="px-4 py-3 text-right font-mono">{currentTotals.outstationAmount > 0 ? `RM ${currentTotals.outstationAmount.toFixed(2)}` : '-'}</td>
@@ -724,15 +733,18 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-900 print:border-black print-border-dark">
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[85px] print:border-black print-border-dark" rowSpan={2}>Date</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 print:border-black print-border-dark" rowSpan={2}>Journey/Description</th>
-                    <th className="px-1.5 py-1 border-r border-slate-900 text-center w-[130px] print:border-black print-border-dark" colSpan={2}>Mileage</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center w-[250px] print:border-black print-border-dark" colSpan={5}>Mileage</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 text-center w-[110px] print:border-black print-border-dark" colSpan={2}>Outstation</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[65px] print:border-black print-border-dark text-center" rowSpan={2}>Toll</th>
                     <th className="px-1.5 py-1.5 border-r border-slate-900 w-[65px] print:border-black print-border-dark text-center" rowSpan={2}>Medical</th>
                     <th className="px-1.5 py-1.5 text-right w-[90px]" rowSpan={2}>Total (RM)</th>
                   </tr>
                   <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-900 print:border-black print-border-dark">
-                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[70px] print:border-black print-border-dark">No. of km</th>
-                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[60px] print:border-black print-border-dark">(RM)</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[8px] w-[55px] print:border-black print-border-dark">Total km</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[8px] w-[40px] print:border-black print-border-dark">Return?</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[8px] w-[35px] print:border-black print-border-dark">Deduct</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[8px] w-[40px] print:border-black print-border-dark">Net km</th>
+                    <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[8px] w-[50px] print:border-black print-border-dark">(RM)</th>
                     <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[50px] print:border-black print-border-dark">Type</th>
                     <th className="px-1.5 py-1 border-r border-slate-900 text-center font-semibold text-[9px] w-[65px] print:border-black print-border-dark">(RM)</th>
                   </tr>
@@ -740,14 +752,32 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 <tbody className="divide-y divide-slate-900 divide-y-2 border-b border-slate-900 print:border-black print-border-dark">
                   {claim.items.map((item, index) => {
                     const isRejected = item.approved === false;
+                    const rawKM = item.mileageDistance || 0;
+                    const cameBack = item.cameBackToOffice || 'yes';
+                    const deductKM = rawKM > 0 ? (item.mileageDeduction !== undefined ? item.mileageDeduction : (cameBack === 'no' ? 15 : 30)) : 0;
+                    const netKM = rawKM > 0 ? (item.mileageNet !== undefined ? item.mileageNet : Math.max(0, rawKM - deductKM)) : 0;
                     return (
                       <tr key={index} className={`odd:bg-slate-50/40 ${isRejected ? 'bg-rose-100/60 line-through text-rose-800 print:bg-rose-100 print:text-rose-950 font-medium' : ''}`}>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{formatDate(item.date)}</td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark">{item.journey}</td>
-                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[10px]">
-                          {item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}
+                        {/* Total KM */}
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[9px]">
+                          {rawKM ? `${rawKM} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}
                         </td>
-                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono">
+                        {/* Return? */}
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center text-[9px]">
+                          {rawKM ? (cameBack === 'no' ? 'No' : 'Yes') : '-'}
+                        </td>
+                        {/* Deduct */}
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[9px]">
+                          {rawKM ? `${deductKM}` : '-'}
+                        </td>
+                        {/* Net KM */}
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[9px] font-bold">
+                          {rawKM ? `${netKM}` : '-'}
+                        </td>
+                        {/* Amount (RM) */}
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-right font-mono text-[9px]">
                           {item.mileageAmount > 0 ? item.mileageAmount.toFixed(2) : '-'}
                         </td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-medium capitalize text-[10px]">
@@ -772,7 +802,21 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 <tfoot>
                   <tr className="bg-slate-100 font-bold border-t border-slate-900 print:border-black print-border-dark">
                     <td className="px-1.5 py-1.5 border-r border-slate-900 uppercase text-center" colSpan={2}>Totals</td>
-                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono">{claim.totals.mileageDistance || '-'}</td>
+                    {/* Raw KM total */}
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono text-[9px]">
+                      {claim.items.reduce((sum, item) => sum + (parseFloat(item.mileageDistance) || 0), 0) || '-'}
+                    </td>
+                    {/* Return total spacer */}
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono text-[9px]">-</td>
+                    {/* Deduct KM total */}
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono text-[9px]">
+                      {claim.items.reduce((sum, item) => sum + (parseFloat(item.mileageDeduction || (item.mileageDistance > 0 ? (item.cameBackToOffice === 'no' ? 15 : 30) : 0)) || 0), 0) || '-'}
+                    </td>
+                    {/* Net KM total */}
+                    <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono text-[9px] font-bold">
+                      {claim.items.reduce((sum, item) => sum + (parseFloat(item.mileageNet || Math.max(0, item.mileageDistance - (item.cameBackToOffice === 'no' ? 15 : 30))) || 0), 0) || '-'}
+                    </td>
+                    {/* Mileage Amount total */}
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">RM {claim.totals.mileageAmount.toFixed(2)}</td>
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-center font-mono">-</td>
                     <td className="px-1.5 py-1.5 border-r border-slate-900 text-right font-mono">

@@ -8,9 +8,16 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     if (draftClaim && draftClaim.items && draftClaim.items.length > 0) {
       return draftClaim.items.map(item => {
         const receipts = item.receipts || (item.receipt ? [item.receipt] : []);
+        const distance = item.mileageDistance || 0;
+        const cameBack = item.cameBackToOffice || 'yes';
+        const deduction = distance > 0 ? (cameBack === 'no' ? 15 : 30) : 0;
+        const netMil = Math.max(0, distance - deduction);
         return {
           ...item,
           vehicle: item.vehicle || 'bike',
+          cameBackToOffice: cameBack,
+          mileageDeduction: item.mileageDeduction !== undefined ? item.mileageDeduction : deduction,
+          mileageNet: item.mileageNet !== undefined ? item.mileageNet : netMil,
           outstationType: item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : 'none'),
           outstationAmount: item.outstationAmount || 0,
           receipts: receipts,
@@ -23,14 +30,17 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: 'bike',
+        cameBackToOffice: 'yes',
+        mileageDistance: 0,
+        mileageDeduction: 0,
+        mileageNet: 0,
+        mileageAmount: 0.00,
         outstationType: 'none',
         outstationAmount: 0.00,
-        mileageDistance: 0,
-        mileageAmount: 0.00,
         toll: 0.00,
         medical: 0.00,
-        receipt: '', // Base64 receipt image
-        receipts: [], // Array of base64 receipt images/PDFs
+        receipt: '',
+        receipts: [],
         total: 0.00
       }
     ];
@@ -44,7 +54,10 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
   // Calculate totals for a row
   const calculateRowTotal = (item) => {
     const rate = item.vehicle === 'bike' ? 0.40 : 0.50;
-    const milAmount = (item.mileageDistance || 0) * rate;
+    const distance = parseFloat(item.mileageDistance) || 0;
+    const deduction = distance > 0 ? (item.cameBackToOffice === 'no' ? 15 : 30) : 0;
+    const netMil = Math.max(0, distance - deduction);
+    const milAmount = netMil * rate;
     const toll = parseFloat(item.toll) || 0;
     const medical = parseFloat(item.medical) || 0;
     
@@ -56,6 +69,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     }
     
     return {
+      mileageDeduction: deduction,
+      mileageNet: netMil,
       mileageAmount: Math.round(milAmount * 100) / 100,
       outstationAmount: outAmount,
       total: Math.round((milAmount + toll + medical + outAmount) * 100) / 100
@@ -77,6 +92,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     }
 
     const calculated = calculateRowTotal(item);
+    item.mileageDeduction = calculated.mileageDeduction;
+    item.mileageNet = calculated.mileageNet;
     item.mileageAmount = calculated.mileageAmount;
     item.outstationAmount = calculated.outstationAmount;
     item.total = calculated.total;
@@ -127,10 +144,13 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: lastItem.date || new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: lastItem.vehicle || 'bike',
+        cameBackToOffice: lastItem.cameBackToOffice || 'yes',
+        mileageDistance: 0,
+        mileageDeduction: 0,
+        mileageNet: 0,
+        mileageAmount: 0.00,
         outstationType: 'none',
         outstationAmount: 0.00,
-        mileageDistance: 0,
-        mileageAmount: 0.00,
         toll: 0.00,
         medical: 0.00,
         receipt: '',
@@ -146,10 +166,13 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         date: new Date().toISOString().split('T')[0],
         journey: '',
         vehicle: 'bike',
+        cameBackToOffice: 'yes',
+        mileageDistance: 0,
+        mileageDeduction: 0,
+        mileageNet: 0,
+        mileageAmount: 0.00,
         outstationType: 'none',
         outstationAmount: 0.00,
-        mileageDistance: 0,
-        mileageAmount: 0.00,
         toll: 0.00,
         medical: 0.00,
         receipt: '',
@@ -162,7 +185,9 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
   };
 
   // Totals calculations
-  const totalDistance = items.reduce((sum, item) => sum + (item.mileageDistance || 0), 0);
+  const totalDistance = items.reduce((sum, item) => sum + (item.mileageNet || 0), 0);
+  const totalRawDistance = items.reduce((sum, item) => sum + (item.mileageDistance || 0), 0);
+  const totalDeductedDistance = items.reduce((sum, item) => sum + (item.mileageDeduction || 0), 0);
   const totalMileageRM = items.reduce((sum, item) => sum + (item.mileageAmount || 0), 0);
   const totalToll = items.reduce((sum, item) => sum + (item.toll || 0), 0);
   const totalMedical = items.reduce((sum, item) => sum + (item.medical || 0), 0);
@@ -187,8 +212,6 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       setValidationError(`Row ${noReceiptIndex + 1}: Proof/receipt attachment is compulsory.`);
       return;
     }
-
-
 
     // Sort items chronologically by date before submitting
     const sortedItems = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -271,27 +294,40 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             <div className="font-bold text-slate-300 flex items-center gap-1">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-500" /> IMPORTANT REMARKS:
             </div>
-            <div>• **Mileage Claim**: Staff must deduct **15KM per trip** from office when entering the mileage.</div>
+            <div>• **Mileage Claim**: Enter total travel distance. The system automatically deducts 15km (1-way) or 30km (returned to office).</div>
             <div>• **Proof / Receipts**: ALL claim rows MUST be attached with proof (multiple files supported).</div>
           </div>
-          <div className="bg-slate-900/60 px-6 py-3 rounded-xl border border-slate-800 flex items-center justify-center text-center grow md:grow-0">
-            <div className="font-mono">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">GRAND TOTAL</span>
-              <span className="text-emerald-400 font-extrabold text-sm">RM {grandTotal.toFixed(2)}</span>
+          <div className="flex flex-wrap gap-4 items-center justify-end grow md:grow-0">
+            <div className="bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-800/80 text-center font-mono">
+              <span className="text-slate-500 block text-[9px] uppercase font-bold">Mileage Summary</span>
+              <span className="text-slate-300 text-xs">
+                Total: <span className="font-bold">{totalRawDistance} km</span> | 
+                Deducted: <span className="text-slate-400 font-bold">-{totalDeductedDistance} km</span> | 
+                Net: <span className="text-cyan-400 font-bold">{totalDistance} km</span>
+              </span>
+            </div>
+            <div className="bg-slate-900/60 px-6 py-3 rounded-xl border border-slate-800 flex items-center justify-center text-center">
+              <div className="font-mono">
+                <span className="text-slate-400 block text-[10px] uppercase font-bold">GRAND TOTAL</span>
+                <span className="text-emerald-400 font-extrabold text-sm">RM {grandTotal.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Desktop View Table */}
         <div className="hidden lg:block overflow-x-auto mb-6">
-          <table className="w-full text-left border-collapse min-w-[1100px]">
+          <table className="w-full text-left border-collapse min-w-[1250px]">
             <thead>
               <tr className="bg-slate-950/50 text-slate-400 text-[10px] font-semibold uppercase tracking-wider border-b border-slate-800">
                 <th className="px-3 py-3 w-[140px]">Date</th>
                 <th className="px-3 py-3 border-l-2 border-slate-600/70 pl-3 bg-slate-800/25">Journey / Description</th>
-                <th className="px-3 py-3 w-[100px] bg-slate-800/25">Vehicle</th>
-                <th className="px-3 py-3 w-[90px] bg-slate-800/25">Mil (KM)</th>
-                <th className="px-3 py-3 w-[90px] bg-slate-800/25">Mil (RM)</th>
+                <th className="px-3 py-3 w-[80px] bg-slate-800/25">Vehicle</th>
+                <th className="px-3 py-3 w-[85px] bg-slate-800/25 text-center">Total Mil (KM)</th>
+                <th className="px-3 py-3 w-[140px] bg-slate-800/25 text-center">Return to Office?</th>
+                <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Deducted (KM)</th>
+                <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Net Mil (KM)</th>
+                <th className="px-3 py-3 w-[85px] bg-slate-800/25">Mil (RM)</th>
                 <th className="px-3 py-3 w-[120px] border-l-2 border-slate-600/70 pl-3 bg-cyan-500/[0.06]">Outstation Type</th>
                 <th className="px-3 py-3 w-[95px] bg-cyan-500/[0.06]">Outstation (RM)</th>
                 <th className="px-3 py-3 w-[90px] border-l-2 border-slate-600/70 pl-3 bg-blue-500/[0.06]">Toll (RM)</th>
@@ -339,7 +375,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     </select>
                   </td>
 
-                  {/* Mileage (Distance) */}
+                  {/* Total Mileage (Distance) */}
                   <td className="px-2 py-3 bg-slate-800/[0.04]">
                     <div className="relative">
                       <input
@@ -353,9 +389,31 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     </div>
                   </td>
 
+                  {/* Return to Office Dropdown */}
+                  <td className="px-2 py-3 bg-slate-800/[0.04]">
+                    <select
+                      value={item.cameBackToOffice || 'yes'}
+                      onChange={(e) => handleRowChange(index, 'cameBackToOffice', e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
+                    >
+                      <option value="yes">Yes (Deduct 30km)</option>
+                      <option value="no">No (Deduct 15km)</option>
+                    </select>
+                  </td>
+
+                  {/* Deducted Mileage (KM) */}
+                  <td className="px-2 py-3 text-center text-slate-400 font-mono text-xs bg-slate-800/[0.04]">
+                    {item.mileageDeduction || 0} km
+                  </td>
+
+                  {/* Net Mileage (KM) */}
+                  <td className="px-2 py-3 text-center text-slate-200 font-mono text-xs font-bold bg-slate-800/[0.04]">
+                    {item.mileageNet || 0} km
+                  </td>
+
                   {/* Mileage (Calculated RM) */}
                   <td className="px-2 py-3 text-slate-400 font-mono text-xs bg-slate-800/[0.04]">
-                    RM {item.mileageAmount.toFixed(2)}
+                    RM {(item.mileageAmount || 0).toFixed(2)}
                   </td>
 
                   {/* Outstation Type */}
@@ -522,7 +580,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
 
               <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Mileage (KM)</label>
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Total Mileage (KM)</label>
                   <input
                     type="number"
                     min="0"
@@ -533,10 +591,30 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Mileage RM</label>
-                  <div className="w-full bg-slate-900/60 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-400 font-mono">
-                    RM {item.mileageAmount.toFixed(2)}
-                  </div>
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Return to Office?</label>
+                  <select
+                    value={item.cameBackToOffice || 'yes'}
+                    onChange={(e) => handleRowChange(index, 'cameBackToOffice', e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  >
+                    <option value="yes">Yes (Deduct 30km)</option>
+                    <option value="no">No (Deduct 15km)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-slate-900/40 p-2 rounded border border-slate-800">
+                  <span className="text-[8px] text-slate-500 uppercase block">Deducted</span>
+                  <span className="text-xs font-mono font-bold text-slate-400">{item.mileageDeduction || 0} km</span>
+                </div>
+                <div className="bg-slate-900/40 p-2 rounded border border-slate-800">
+                  <span className="text-[8px] text-slate-500 uppercase block">Net KM</span>
+                  <span className="text-xs font-mono font-bold text-cyan-400">{item.mileageNet || 0} km</span>
+                </div>
+                <div className="bg-slate-900/40 p-2 rounded border border-slate-800">
+                  <span className="text-[8px] text-slate-500 uppercase block">Mileage RM</span>
+                  <span className="text-xs font-mono font-bold text-emerald-400">RM {(item.mileageAmount || 0).toFixed(2)}</span>
                 </div>
               </div>
 
