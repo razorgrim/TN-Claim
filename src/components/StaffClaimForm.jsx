@@ -8,7 +8,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     if (draftClaim && draftClaim.items && draftClaim.items.length > 0) {
       return draftClaim.items.map(item => ({
         ...item,
-        vehicle: item.vehicle || 'car',
+        vehicle: item.vehicle || 'bike',
         outstationType: item.outstationType || (item.outstationDays ? (parseInt(item.outstationDays, 10) === 1 ? 'daily' : 'sleepover') : 'none'),
         outstationAmount: item.outstationAmount || 0
       }));
@@ -17,7 +17,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       {
         date: new Date().toISOString().split('T')[0],
         journey: '',
-        vehicle: 'car',
+        vehicle: 'bike',
         outstationType: 'none',
         outstationAmount: 0.00,
         mileageDistance: 0,
@@ -100,7 +100,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       {
         date: lastItem.date || new Date().toISOString().split('T')[0],
         journey: '',
-        vehicle: lastItem.vehicle || 'car',
+        vehicle: lastItem.vehicle || 'bike',
         outstationType: 'none',
         outstationAmount: 0.00,
         mileageDistance: 0,
@@ -118,7 +118,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       setItems([{
         date: new Date().toISOString().split('T')[0],
         journey: '',
-        vehicle: 'car',
+        vehicle: 'bike',
         outstationType: 'none',
         outstationAmount: 0.00,
         mileageDistance: 0,
@@ -319,7 +319,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   {/* Vehicle Selector */}
                   <td className="px-2 py-3">
                     <select
-                      value={item.vehicle || 'car'}
+                      value={item.vehicle || 'bike'}
                       onChange={(e) => handleRowChange(index, 'vehicle', e.target.value)}
                       className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
                     >
@@ -488,7 +488,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <div>
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">Vehicle Type</label>
                   <select
-                    value={item.vehicle || 'car'}
+                    value={item.vehicle || 'bike'}
                     onChange={(e) => handleRowChange(index, 'vehicle', e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
                   >

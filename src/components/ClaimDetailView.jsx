@@ -11,12 +11,12 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
   const [reviewItems, setReviewItems] = useState(() => {
     return (claim.items || []).map(item => ({
       ...item,
-      approved: item.approved !== false
+      approved: claim.status === 'Pending' ? false : (item.approved === true)
     }));
   });
 
   const calculateTotals = (items, type) => {
-    const approvedItems = items.filter(item => item.approved !== false);
+    const approvedItems = items.filter(item => item.approved === true);
     if (type === 'ot') {
       const totalWeekday = approvedItems.reduce((sum, item) => sum + (item.weekdayHours || 0), 0);
       const totalWeekend = approvedItems.reduce((sum, item) => sum + (item.weekendHours || 0), 0);
@@ -86,7 +86,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
     return MOCK_RECEIPT_IMAGES[receiptKey] || null;
   };
 
-  const allRowsApproved = claim.status === 'Approved' && (claim.items || []).every(item => item.approved !== false);
+  const allRowsApproved = claim.status === 'Approved' && (claim.items || []).every(item => item.approved === true);
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -379,7 +379,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5 text-center">
                           <input
                             type="checkbox"
-                            checked={item.approved !== false}
+                            checked={item.approved === true}
                             disabled={claim.status !== 'Pending'}
                             onChange={() => toggleRowApproval(index)}
                             className="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-950 border-slate-700 cursor-pointer disabled:cursor-not-allowed"
@@ -434,7 +434,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5 text-center">
                           <input
                             type="checkbox"
-                            checked={item.approved !== false}
+                            checked={item.approved === true}
                             disabled={claim.status !== 'Pending'}
                             onChange={() => toggleRowApproval(index)}
                             className="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-950 border-slate-700 cursor-pointer disabled:cursor-not-allowed"
@@ -502,7 +502,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                         <td className="px-4 py-3.5 text-center">
                           <input
                             type="checkbox"
-                            checked={item.approved !== false}
+                            checked={item.approved === true}
                             disabled={claim.status !== 'Pending'}
                             onChange={() => toggleRowApproval(index)}
                             className="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 bg-slate-950 border-slate-700 cursor-pointer disabled:cursor-not-allowed"
