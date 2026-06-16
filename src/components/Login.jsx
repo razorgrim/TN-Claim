@@ -72,7 +72,6 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. staff@totalneutron.com"
                 className="w-full bg-slate-950/80 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-medium"
               />
             </div>
@@ -88,7 +87,6 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
                 className="w-full bg-slate-950/80 border border-slate-700 rounded-xl pl-11 pr-11 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
               />
               <button

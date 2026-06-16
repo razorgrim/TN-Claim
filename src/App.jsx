@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  LayoutDashboard, UserSquare, LogOut, ShieldAlert, Loader
+  LayoutDashboard, UserSquare, LogOut, ShieldAlert, Loader, Users, FileText
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import ProfileSettings from './components/ProfileSettings';
@@ -9,7 +9,7 @@ import StaffClaimForm from './components/StaffClaimForm';
 import OthersClaimForm from './components/OthersClaimForm';
 import ClaimDetailView from './components/ClaimDetailView';
 import Login from './components/Login';
-import Register from './components/Register';
+import ManageStaff from './components/ManageStaff';
 
 export default function App() {
   const [user, setUser] = useState(null); // stores authenticated user info
@@ -17,7 +17,6 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard'); // 'dashboard', 'profile', 'new-ot', 'new-general', 'new-others', 'view'
   const [activeClaim, setActiveClaim] = useState(null);
   
-  const [authView, setAuthView] = useState('login'); // 'login', 'register'
   const [loading, setLoading] = useState(true); // app loading session check
   const [claimsLoading, setClaimsLoading] = useState(false);
 
@@ -364,17 +363,7 @@ export default function App() {
           </div>
         </header>
         <main className="flex-1 flex items-center justify-center">
-          {authView === 'login' ? (
-            <Login 
-              onLoginSuccess={handleLoginSuccess}
-              onNavigateToRegister={() => setAuthView('register')}
-            />
-          ) : (
-            <Register 
-              onRegisterSuccess={() => setAuthView('login')}
-              onNavigateToLogin={() => setAuthView('login')}
-            />
-          )}
+          <Login onLoginSuccess={handleLoginSuccess} />
         </main>
       </div>
     );
@@ -422,8 +411,8 @@ export default function App() {
       {/* Main Body */}
       <main className="flex-1 max-w-none w-full mx-auto px-4 sm:px-6 lg:px-10 py-8">
         
-        {/* Navigation Tabs for Staff View - Hidden during print */}
-        {user.role === 'staff' && currentTab !== 'new-ot' && currentTab !== 'new-general' && currentTab !== 'new-others' && currentTab !== 'view' && (
+        {/* Navigation Tabs - Hidden during print */}
+        {currentTab !== 'new-ot' && currentTab !== 'new-general' && currentTab !== 'new-others' && currentTab !== 'view' && (
           <div className="no-print flex border-b border-slate-800 mb-8 gap-1.5">
             <button
               onClick={() => setCurrentTab('dashboard')}
@@ -436,17 +425,34 @@ export default function App() {
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
             </button>
-            <button
-              onClick={() => setCurrentTab('profile')}
-              className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
-                currentTab === 'profile'
-                  ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
-                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-              }`}
-            >
-              <UserSquare className="w-4 h-4" />
-              Profile Settings
-            </button>
+
+            {user.role === 'staff' && (
+              <button
+                onClick={() => setCurrentTab('profile')}
+                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
+                  currentTab === 'profile'
+                    ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
+                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                }`}
+              >
+                <UserSquare className="w-4 h-4" />
+                Profile Settings
+              </button>
+            )}
+
+            {user.role === 'admin' && (
+              <button
+                onClick={() => setCurrentTab('manage-staff')}
+                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
+                  currentTab === 'manage-staff'
+                    ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
+                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Manage Staff
+              </button>
+            )}
           </div>
         )}
 
@@ -467,6 +473,10 @@ export default function App() {
               profile={user}
               onUpdateProfile={handleUpdateProfile}
             />
+          )}
+
+          {currentTab === 'manage-staff' && user.role === 'admin' && (
+            <ManageStaff currentUser={user} />
           )}
 
           {currentTab === 'new-ot' && (

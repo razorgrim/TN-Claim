@@ -3,12 +3,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import { getDb } from '../db.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Input Validation Schemas
-const registerSchema = Joi.object({
+});
+
+const adminRegisterSchema = Joi.object({
   name: Joi.string().min(3).max(100).required().messages({
     'string.min': 'Name must be at least 3 characters long',
     'string.empty': 'Name is required'
@@ -36,7 +38,26 @@ const registerSchema = Joi.object({
     'Management'
   ).required().messages({
     'any.only': 'Please select a valid department'
+  }),
+  role: Joi.string().valid('staff', 'admin').required().messages({
+    'any.only': 'Please select a valid role'
   })
+});
+
+const adminUpdateUserSchema = Joi.object({
+  name: Joi.string().min(3).max(100).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/).optional().allow(''),
+  ic: Joi.string().min(8).max(20).required(),
+  contact: Joi.string().required(),
+  department: Joi.string().valid(
+    'Technical Operations', 
+    'IT Department', 
+    'Sales & Marketing', 
+    'Finance & HR', 
+    'Management'
+  ).required(),
+  role: Joi.string().valid('staff', 'admin').required()
 });
 
 const loginSchema = Joi.object({
@@ -44,36 +65,104 @@ const loginSchema = Joi.object({
   password: Joi.string().required()
 });
 
-// 1. REGISTER STAFF MEMBER
-router.post('/register', async (req, res) => {
-  const { error, value } = registerSchema.validate(req.body);
+// 1. ADMIN USER MANAGEMENT ROUTES
+
+// List all users
+router.get('/users', requireAdmin, async (req, res) => {
+  const db = getDb();
+  try {
+    const [rows] = await db.query('SELECT id, name, email, role, ic, contact, department, mileage_rate FROM users ORDER BY name ASC');
+    return res.json(rows);
+  } catch (err) {
+    console.error('Error listing users:', err);
+    return res.status(500).json({ error: 'Server error listing users.' });
+  }
+});
+
+// Admin creates/registers a user
+router.post('/users', requireAdmin, async (req, res) => {
+  const { error, value } = adminRegisterSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { name, email, password, ic, contact, department } = value;
+  const { name, email, password, ic, contact, department, role } = value;
   const db = getDb();
 
   try {
-    // Check if user already exists
     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(400).json({ error: 'An account with this email address already exists.' });
     }
 
-    // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Insert user
     await db.query(`
       INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate)
-      VALUES (?, ?, ?, ?, ?, ?, 'staff', 0.60)
-    `, [name, email, passwordHash, ic, contact, department]);
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0.60)
+    `, [name, email, passwordHash, ic, contact, department, role]);
 
-    return res.status(201).json({ message: 'Registration successful! You can now log in.' });
+    return res.status(201).json({ message: 'User account created successfully.' });
   } catch (err) {
-    console.error('Registration error:', err);
-    return res.status(500).json({ error: 'Server error. Failed to complete registration.' });
+    console.error('Admin user creation error:', err);
+    return res.status(500).json({ error: 'Server error creating user account.' });
+  }
+});
+
+// Admin updates a user profile/account
+router.put('/users/:id', requireAdmin, async (req, res) => {
+  const { error, value } = adminUpdateUserSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const { name, email, password, ic, contact, department, role } = value;
+  const userId = req.params.id;
+  const db = getDb();
+
+  try {
+    const [existing] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [email, userId]);
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'Another account is already using this email address.' });
+    }
+
+    if (password && password.trim().length > 0) {
+      const passwordHash = await bcrypt.hash(password, 10);
+      await db.query(`
+        UPDATE users 
+        SET name = ?, email = ?, password_hash = ?, ic = ?, contact = ?, department = ?, role = ?
+        WHERE id = ?
+      `, [name, email, passwordHash, ic, contact, department, role, userId]);
+    } else {
+      await db.query(`
+        UPDATE users 
+        SET name = ?, email = ?, ic = ?, contact = ?, department = ?, role = ?
+        WHERE id = ?
+      `, [name, email, ic, contact, department, role, userId]);
+    }
+
+    return res.json({ message: 'User account updated successfully.' });
+  } catch (err) {
+    console.error('Admin user update error:', err);
+    return res.status(500).json({ error: 'Server error updating user account.' });
+  }
+});
+
+// Admin deletes a user account (cannot self-delete)
+router.delete('/users/:id', requireAdmin, async (req, res) => {
+  const userId = req.params.id;
+  const db = getDb();
+
+  if (parseInt(userId, 10) === req.user.id) {
+    return res.status(400).json({ error: 'You cannot delete your own admin account.' });
+  }
+
+  try {
+    await db.query('DELETE FROM users WHERE id = ?', [userId]);
+    return res.json({ message: 'User account deleted successfully.' });
+  } catch (err) {
+    console.error('Admin user delete error:', err);
+    return res.status(500).json({ error: 'Server error deleting user account.' });
   }
 });
 
