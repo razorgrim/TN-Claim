@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  Plus, Trash2, Calendar, FileText, Upload, Eye, EyeOff, AlertTriangle, CheckCircle, ArrowLeft, Image as ImageIcon, X 
+import {
+  Plus, Trash2, Calendar, FileText, Upload, Eye, EyeOff, AlertTriangle, CheckCircle, ArrowLeft, Image as ImageIcon, X
 } from 'lucide-react';
 
 export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft, onSubmitClaim, onCancel }) {
@@ -60,14 +60,14 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
     const milAmount = netMil * rate;
     const toll = parseFloat(item.toll) || 0;
     const medical = parseFloat(item.medical) || 0;
-    
+
     let outAmount = 0;
     if (item.outstationType === 'daily') {
       outAmount = 15;
     } else if (item.outstationType === 'sleepover') {
       outAmount = 30;
     }
-    
+
     return {
       mileageDeduction: deduction,
       mileageNet: netMil,
@@ -275,8 +275,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             {role === 'admin' ? 'Admin Edit Mode — General Staff Claim' : 'General Staff Claim Form'}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            {role === 'admin' 
-              ? `Reviewing and correcting mileage, toll, medical, or other claims for ${draftClaim ? draftClaim.employeeName : 'staff'}.` 
+            {role === 'admin'
+              ? `Reviewing and correcting mileage, toll, medical, or other claims for ${draftClaim ? draftClaim.employeeName : 'staff'}.`
               : 'Total Neutron Solution Sdn Bhd — Enter travel mileage, toll, medical, or other operational claims.'}
           </p>
         </div>
@@ -301,8 +301,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             <div className="bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-800/80 text-center font-mono">
               <span className="text-slate-500 block text-[9px] uppercase font-bold">Mileage Summary</span>
               <span className="text-slate-300 text-xs">
-                Total: <span className="font-bold">{totalRawDistance} km</span> | 
-                Deducted: <span className="text-slate-400 font-bold">-{totalDeductedDistance} km</span> | 
+                Total: <span className="font-bold">{totalRawDistance} km</span> |
+                Deducted: <span className="text-slate-400 font-bold">-{totalDeductedDistance} km</span> |
                 Net: <span className="text-cyan-400 font-bold">{totalDistance.toFixed(2)} km</span>
               </span>
             </div>
@@ -324,7 +324,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <th className="px-3 py-3 border-l-2 border-slate-600/70 pl-3 bg-slate-800/25">Journey / Description</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25">Vehicle</th>
                 <th className="px-3 py-3 w-[85px] bg-slate-800/25 text-center">Total Mil (KM)</th>
-                <th className="px-3 py-3 w-[140px] bg-slate-800/25 text-center">Return to Office?</th>
+                <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Return to Office?</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Deducted (KM)</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Net Mil (KM)</th>
                 <th className="px-3 py-3 w-[85px] bg-slate-800/25">Mil (RM)</th>
@@ -464,11 +464,10 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-violet-500/[0.02]">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
-                        <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
-                          item.receipts && item.receipts.length > 0 
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                        <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${item.receipts && item.receipts.length > 0
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                             : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
-                        }`}>
+                          }`}>
                           <Upload className="w-3.5 h-3.5 shrink-0" />
                           <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Upload'}</span>
                           <input
@@ -480,7 +479,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                           />
                         </label>
                       </div>
-                      
+
                       {/* Uploaded files listing */}
                       {item.receipts && item.receipts.length > 0 && (
                         <div className="flex flex-wrap gap-1 max-w-[150px]">
@@ -681,11 +680,10 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-slate-400">Proof/Receipts:</span>
                   <div className="flex items-center gap-2">
-                    <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${
-                      item.receipts && item.receipts.length > 0 
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                    <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${item.receipts && item.receipts.length > 0
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                         : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                    }`}>
+                      }`}>
                       <Upload className="w-3.5 h-3.5" />
                       <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Capture Proof'}</span>
                       <input
@@ -698,7 +696,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     </label>
                   </div>
                 </div>
-                
+
                 {/* Mobile receipts list */}
                 {item.receipts && item.receipts.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-1.5 border-t border-slate-800">
@@ -743,7 +741,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             <Plus className="w-4 h-4 text-blue-400" />
             Add Claim Item
           </button>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
@@ -766,9 +764,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       {/* Receipt Modal Preview */}
       {receiptPreviewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${
-            receiptPreviewUrl.startsWith('data:application/pdf') ? 'max-w-3xl' : 'max-w-md'
-          }`}>
+          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${receiptPreviewUrl.startsWith('data:application/pdf') ? 'max-w-3xl' : 'max-w-md'
+            }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
                 <FileText className="w-5 h-5 text-cyan-400" /> Proof Preview
@@ -788,9 +785,9 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   className="w-full h-[400px] rounded-lg border-none bg-white"
                 />
               ) : (
-                <img 
-                  src={receiptPreviewUrl} 
-                  alt="Proof attachment" 
+                <img
+                  src={receiptPreviewUrl}
+                  alt="Proof attachment"
                   className="max-w-full h-auto object-contain rounded-lg"
                 />
               )}
