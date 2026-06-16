@@ -620,8 +620,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
           </div>
 
           {/* Employee Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 border border-slate-900 rounded overflow-hidden text-xs mb-3 print:border-black print-border-dark">
-            <div className="divide-y divide-slate-300 border-r border-slate-900 md:border-r print:border-black print-border-dark">
+          <div className="grid grid-cols-2 border border-slate-900 rounded overflow-hidden text-xs mb-3 print:border-black print-border-dark">
+            <div className="divide-y divide-slate-300 border-r border-slate-900 print:border-black print-border-dark">
               <div className="px-3 py-1 flex justify-between bg-slate-50/50 print:bg-slate-100">
                 <span className="font-semibold text-slate-500 print:text-black">Employee Name:</span>
                 <span className="font-bold text-slate-800 print:text-black">{claim.employeeName}</span>
