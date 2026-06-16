@@ -150,10 +150,11 @@ export default function App() {
 
   const handleSubmitClaim = async (claimDetails) => {
     try {
+      let res;
       if (activeClaim) {
         if (user.role === 'admin') {
           // Admin saves and approves edited claim
-          await fetch(`/api/claims/${activeClaim.id}/admin-edit`, {
+          res = await fetch(`/api/claims/${activeClaim.id}/admin-edit`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -168,7 +169,7 @@ export default function App() {
             ...item,
             approved: true
           }));
-          await fetch(`/api/claims/${activeClaim.id}`, {
+          res = await fetch(`/api/claims/${activeClaim.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -180,7 +181,7 @@ export default function App() {
         }
       } else {
         // Create new claim
-        await fetch('/api/claims', {
+        res = await fetch('/api/claims', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -189,19 +190,28 @@ export default function App() {
           })
         });
       }
+
+      if (res && !res.ok) {
+        const data = await res.json();
+        alert(data.error || 'Failed to submit claim.');
+        return;
+      }
+
       setActiveClaim(null);
       setCurrentTab('dashboard');
     } catch (err) {
       console.error('Submit claim error:', err);
+      alert('Network error. Failed to submit claim.');
     }
   };
 
   const handleSaveDraft = async (claimDetails) => {
     try {
+      let res;
       if (activeClaim) {
         if (user.role === 'admin') {
           // Admin saves corrections but keeps pending
-          await fetch(`/api/claims/${activeClaim.id}/admin-edit`, {
+          res = await fetch(`/api/claims/${activeClaim.id}/admin-edit`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -216,7 +226,7 @@ export default function App() {
             ...item,
             approved: true
           }));
-          await fetch(`/api/claims/${activeClaim.id}`, {
+          res = await fetch(`/api/claims/${activeClaim.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -228,7 +238,7 @@ export default function App() {
         }
       } else {
         // Create new draft
-        await fetch('/api/claims', {
+        res = await fetch('/api/claims', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -237,10 +247,18 @@ export default function App() {
           })
         });
       }
+
+      if (res && !res.ok) {
+        const data = await res.json();
+        alert(data.error || 'Failed to save draft.');
+        return;
+      }
+
       setActiveClaim(null);
       setCurrentTab('dashboard');
     } catch (err) {
       console.error('Save draft error:', err);
+      alert('Network error. Failed to save draft.');
     }
   };
 
@@ -253,9 +271,13 @@ export default function App() {
       });
       if (res.ok) {
         setCurrentTab('dashboard');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to approve claim.');
       }
     } catch (err) {
       console.error('Approve claim error:', err);
+      alert('Network error. Failed to approve claim.');
     }
   };
 
@@ -268,9 +290,13 @@ export default function App() {
       });
       if (res.ok) {
         setCurrentTab('dashboard');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to reject claim.');
       }
     } catch (err) {
       console.error('Reject claim error:', err);
+      alert('Network error. Failed to reject claim.');
     }
   };
 

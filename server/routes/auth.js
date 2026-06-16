@@ -109,11 +109,11 @@ router.post('/login', async (req, res) => {
       { expiresIn: '8h' }
     );
 
-    // Set secure cookie
+    // Set cookie options
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: false, // Set to false to support plain HTTP Proxmox/intranet deployments
+      sameSite: 'lax', // Changed to 'lax' for improved cookie sharing compatibility on local networks
       maxAge: 8 * 60 * 60 * 1000 // 8 hours
     });
 
