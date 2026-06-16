@@ -324,7 +324,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                 <th className="px-3 py-3 border-l-2 border-slate-600/70 pl-3 bg-slate-800/25">Journey / Description</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25">Vehicle</th>
                 <th className="px-3 py-3 w-[85px] bg-slate-800/25 text-center">Total Mil (KM)</th>
-                <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Return to Office?</th>
+                <th className="px-3 py-3 w-[120px] bg-slate-800/25 text-center">Return to Office?</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Deducted (KM)</th>
                 <th className="px-3 py-3 w-[80px] bg-slate-800/25 text-center">Net Mil (KM)</th>
                 <th className="px-3 py-3 w-[85px] bg-slate-800/25">Mil (RM)</th>
@@ -465,8 +465,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
                         <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${item.receipts && item.receipts.length > 0
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                            : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                          : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
                           }`}>
                           <Upload className="w-3.5 h-3.5 shrink-0" />
                           <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Upload'}</span>
@@ -681,8 +681,8 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   <span className="text-xs font-semibold text-slate-400">Proof/Receipts:</span>
                   <div className="flex items-center gap-2">
                     <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${item.receipts && item.receipts.length > 0
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                        : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                      : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
                       }`}>
                       <Upload className="w-3.5 h-3.5" />
                       <span>{item.receipts && item.receipts.length > 0 ? `Attached (${item.receipts.length})` : 'Capture Proof'}</span>
