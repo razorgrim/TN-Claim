@@ -494,33 +494,33 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <thead>
                     <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
                       <th className="px-4 py-3">Date</th>
-                      <th className="px-4 py-3">Journey/Description</th>
-                      <th className="px-4 py-3 text-center">Mileage (KM)</th>
-                      <th className="px-4 py-3 text-right">Mileage Amount</th>
-                      <th className="px-4 py-3 text-center">Outstation Type</th>
-                      <th className="px-4 py-3 text-right">Outstation Amount</th>
-                      <th className="px-4 py-3 text-right">Toll</th>
-                      <th className="px-4 py-3 text-right">Medical</th>
-                      <th className="px-4 py-3 text-right">Row Total</th>
-                      <th className="px-4 py-3 text-center">Proof</th>
-                      <th className="px-4 py-3 text-center">Approve Row?</th>
+                      <th className="px-4 py-3 border-l-2 border-slate-600/70 pl-4 bg-slate-800/25">Journey/Description</th>
+                      <th className="px-4 py-3 text-center bg-slate-800/25">Mileage (KM)</th>
+                      <th className="px-4 py-3 text-right bg-slate-800/25">Mileage Amount</th>
+                      <th className="px-4 py-3 text-center border-l-2 border-slate-600/70 pl-4 bg-cyan-500/[0.06]">Outstation Type</th>
+                      <th className="px-4 py-3 text-right bg-cyan-500/[0.06]">Outstation Amount</th>
+                      <th className="px-4 py-3 text-right border-l-2 border-slate-600/70 pl-4 bg-blue-500/[0.06]">Toll</th>
+                      <th className="px-4 py-3 text-right border-l-2 border-slate-600/70 pl-4 bg-indigo-500/[0.06]">Medical</th>
+                      <th className="px-4 py-3 text-right border-l-2 border-slate-600/70 pl-4">Row Total</th>
+                      <th className="px-4 py-3 text-center border-l-2 border-slate-600/70 pl-4 bg-violet-500/[0.06]">Proof</th>
+                      <th className="px-4 py-3 text-center border-l-2 border-slate-600/70 pl-4">Approve Row?</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
                     {reviewItems.map((item, index) => (
                       <tr key={index} className="hover:bg-slate-800/25 transition-colors">
                         <td className="px-4 py-3.5 font-medium text-slate-200">{formatDate(item.date)}</td>
-                        <td className="px-4 py-3.5">{item.journey}</td>
-                        <td className="px-4 py-3.5 text-center font-mono">{item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono">{item.mileageAmount > 0 ? `RM ${item.mileageAmount.toFixed(2)}` : '-'}</td>
-                        <td className="px-4 py-3.5 text-center capitalize">{item.outstationType || '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono">{item.outstationAmount > 0 ? `RM ${item.outstationAmount.toFixed(2)}` : '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono">{item.toll > 0 ? `RM ${item.toll.toFixed(2)}` : '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono">{item.medical > 0 ? `RM ${item.medical.toFixed(2)}` : '-'}</td>
-                        <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-200">
+                        <td className="px-4 py-3.5 border-l-2 border-slate-600/70 pl-3.5 bg-slate-800/[0.04]">{item.journey}</td>
+                        <td className="px-4 py-3.5 text-center font-mono bg-slate-800/[0.04]">{item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono bg-slate-800/[0.04]">{item.mileageAmount > 0 ? `RM ${item.mileageAmount.toFixed(2)}` : '-'}</td>
+                        <td className="px-4 py-3.5 text-center capitalize border-l-2 border-slate-600/70 pl-3.5 bg-cyan-500/[0.02]">{item.outstationType || '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono bg-cyan-500/[0.02]">{item.outstationAmount > 0 ? `RM ${item.outstationAmount.toFixed(2)}` : '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono border-l-2 border-slate-600/70 pl-3.5 bg-blue-500/[0.02]">{item.toll > 0 ? `RM ${item.toll.toFixed(2)}` : '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono border-l-2 border-slate-600/70 pl-3.5 bg-indigo-500/[0.02]">{item.medical > 0 ? `RM ${item.medical.toFixed(2)}` : '-'}</td>
+                        <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-200 border-l-2 border-slate-600/70 pl-3.5">
                           RM {(item.total !== undefined ? item.total : ((item.mileageAmount || 0) + (item.toll || 0) + (item.medical || 0) + (item.outstationAmount || 0))).toFixed(2)}
                         </td>
-                        <td className="px-4 py-3.5 text-center">
+                        <td className="px-4 py-3.5 text-center border-l-2 border-slate-600/70 pl-3.5 bg-violet-500/[0.02]">
                           {getItemReceipts(item).length > 0 ? (
                             <div className="flex flex-col gap-1 items-center justify-center">
                               {getItemReceipts(item).map((rcpt, rcptIdx) => (
@@ -544,7 +544,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                             <span className="text-slate-500 font-semibold">-</span>
                           )}
                         </td>
-                        <td className="px-4 py-3.5 text-center">
+                        <td className="px-4 py-3.5 text-center border-l-2 border-slate-600/70 pl-3.5">
                           <input
                             type="checkbox"
                             checked={item.approved === true}

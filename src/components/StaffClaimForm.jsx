@@ -288,16 +288,16 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
             <thead>
               <tr className="bg-slate-950/50 text-slate-400 text-[10px] font-semibold uppercase tracking-wider border-b border-slate-800">
                 <th className="px-3 py-3 w-[140px]">Date</th>
-                <th className="px-3 py-3">Journey / Description</th>
-                <th className="px-3 py-3 w-[100px]">Vehicle</th>
-                <th className="px-3 py-3 w-[90px]">Mil (KM)</th>
-                <th className="px-3 py-3 w-[90px]">Mil (RM)</th>
-                <th className="px-3 py-3 w-[120px]">Outstation Type</th>
-                <th className="px-3 py-3 w-[95px]">Outstation (RM)</th>
-                <th className="px-3 py-3 w-[90px]">Toll (RM)</th>
-                <th className="px-3 py-3 w-[90px]">Medical (RM)</th>
-                <th className="px-3 py-3 w-[120px]">Proof</th>
-                <th className="px-3 py-3 w-[90px] text-right">Total (RM)</th>
+                <th className="px-3 py-3 border-l-2 border-slate-600/70 pl-3 bg-slate-800/25">Journey / Description</th>
+                <th className="px-3 py-3 w-[100px] bg-slate-800/25">Vehicle</th>
+                <th className="px-3 py-3 w-[90px] bg-slate-800/25">Mil (KM)</th>
+                <th className="px-3 py-3 w-[90px] bg-slate-800/25">Mil (RM)</th>
+                <th className="px-3 py-3 w-[120px] border-l-2 border-slate-600/70 pl-3 bg-cyan-500/[0.06]">Outstation Type</th>
+                <th className="px-3 py-3 w-[95px] bg-cyan-500/[0.06]">Outstation (RM)</th>
+                <th className="px-3 py-3 w-[90px] border-l-2 border-slate-600/70 pl-3 bg-blue-500/[0.06]">Toll (RM)</th>
+                <th className="px-3 py-3 w-[90px] border-l-2 border-slate-600/70 pl-3 bg-indigo-500/[0.06]">Medical (RM)</th>
+                <th className="px-3 py-3 w-[120px] border-l-2 border-slate-600/70 pl-3 bg-violet-500/[0.06]">Proof</th>
+                <th className="px-3 py-3 w-[90px] text-right border-l-2 border-slate-600/70 pl-3">Total (RM)</th>
                 <th className="px-3 py-3 w-[50px]"></th>
               </tr>
             </thead>
@@ -305,7 +305,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
               {items.map((item, index) => (
                 <tr key={index} className="hover:bg-slate-800/10">
                   {/* Date */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 text-slate-300">
                     <input
                       type="date"
                       value={item.date}
@@ -317,7 +317,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Journey */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-slate-800/[0.04]">
                     <input
                       type="text"
                       placeholder="Journey/Description"
@@ -328,7 +328,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Vehicle Selector */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 bg-slate-800/[0.04]">
                     <select
                       value={item.vehicle || 'bike'}
                       onChange={(e) => handleRowChange(index, 'vehicle', e.target.value)}
@@ -340,7 +340,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Mileage (Distance) */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 bg-slate-800/[0.04]">
                     <div className="relative">
                       <input
                         type="number"
@@ -354,12 +354,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Mileage (Calculated RM) */}
-                  <td className="px-2 py-3 text-slate-400 font-mono text-xs">
+                  <td className="px-2 py-3 text-slate-400 font-mono text-xs bg-slate-800/[0.04]">
                     RM {item.mileageAmount.toFixed(2)}
                   </td>
 
                   {/* Outstation Type */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-cyan-500/[0.02]">
                     <select
                       value={item.outstationType || 'none'}
                       onChange={(e) => handleRowChange(index, 'outstationType', e.target.value)}
@@ -372,12 +372,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Outstation (Calculated RM) */}
-                  <td className="px-2 py-3 text-slate-400 font-mono text-xs">
+                  <td className="px-2 py-3 text-slate-400 font-mono text-xs bg-cyan-500/[0.02]">
                     RM {item.outstationAmount.toFixed(2)}
                   </td>
 
                   {/* Toll */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-blue-500/[0.02]">
                     <input
                       type="number"
                       min="0"
@@ -390,7 +390,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Medical */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-indigo-500/[0.02]">
                     <input
                       type="number"
                       min="0"
@@ -403,7 +403,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Proof Upload */}
-                  <td className="px-2 py-3">
+                  <td className="px-2 py-3 border-l-2 border-slate-600/70 pl-2.5 bg-violet-500/[0.02]">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
                         <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
@@ -456,7 +456,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                   </td>
 
                   {/* Row Total */}
-                  <td className="px-2 py-3 text-right font-mono font-bold text-slate-200 text-xs">
+                  <td className="px-2 py-3 text-right font-mono font-bold text-slate-200 text-xs border-l-2 border-slate-600/70 pl-2.5">
                     RM {item.total.toFixed(2)}
                   </td>
 
