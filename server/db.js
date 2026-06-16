@@ -42,8 +42,11 @@ export async function initializeDatabase() {
     const connection = await pool.getConnection();
     
     // Support large payloads (image/PDF base64 attachments) without connection resets
-    await connection.query('SET SESSION max_allowed_packet = 67108864');
-    await connection.query('SET GLOBAL max_allowed_packet = 67108864');
+    try {
+      await connection.query('SET GLOBAL max_allowed_packet = 67108864');
+    } catch (packetError) {
+      console.warn('Warning: Could not set global max_allowed_packet on database.', packetError.message);
+    }
 
     // Create users table
     await connection.query(`
