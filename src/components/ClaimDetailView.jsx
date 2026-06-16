@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { 
   ArrowLeft, Check, X, Printer, Calendar, FileText, CheckCircle2, AlertCircle, XCircle, ImageIcon, Trash2, Archive
 } from 'lucide-react';
-import { MOCK_RECEIPT_IMAGES } from '../utils/mockData';
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    const year = parts[0].slice(-2);
+    const month = parts[1];
+    const day = parts[2];
+    return `${day}-${month}-${year}`;
+  }
+  return dateStr;
+};
 
 export default function ClaimDetailView({ role, claim, onBack, onApprove, onReject, onEditClaim, onDeleteClaim, onArchiveClaim }) {
   const [adminComments, setAdminComments] = useState(claim.admin_comments || claim.adminComments || '');
@@ -318,7 +328,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               </div>
               <div>
                 <span className="text-slate-400 block text-xs">Submitted On</span>
-                <span className="text-slate-200 font-semibold">{claim.date}</span>
+                <span className="text-slate-200 font-semibold">{formatDate(claim.date)}</span>
               </div>
             </div>
           </div>
@@ -351,7 +361,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tbody className="divide-y divide-slate-800">
                     {reviewItems.map((item, index) => (
                       <tr key={index} className="hover:bg-slate-800/25 transition-colors">
-                        <td className="px-4 py-3.5 font-medium text-slate-200">{item.date}</td>
+                        <td className="px-4 py-3.5 font-medium text-slate-200">{formatDate(item.date)}</td>
                         <td className="px-4 py-3.5 font-mono">{item.checkIn}</td>
                         <td className="px-4 py-3.5 font-mono">{item.checkOut}</td>
                         <td className="px-4 py-3.5 text-center font-mono text-cyan-400">{item.weekdayHours || 0}</td>
@@ -411,7 +421,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tbody className="divide-y divide-slate-800">
                     {reviewItems.map((item, index) => (
                       <tr key={index} className="hover:bg-slate-800/25 transition-colors">
-                        <td className="px-4 py-3.5 font-medium text-slate-200">{item.date}</td>
+                        <td className="px-4 py-3.5 font-medium text-slate-200">{formatDate(item.date)}</td>
                         <td className="px-4 py-3.5">{item.description}</td>
                         <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-200">RM {item.amount.toFixed(2)}</td>
                         <td className="px-4 py-3.5 text-center">
@@ -471,7 +481,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                   <tbody className="divide-y divide-slate-800">
                     {reviewItems.map((item, index) => (
                       <tr key={index} className="hover:bg-slate-800/25 transition-colors">
-                        <td className="px-4 py-3.5 font-medium text-slate-200">{item.date}</td>
+                        <td className="px-4 py-3.5 font-medium text-slate-200">{formatDate(item.date)}</td>
                         <td className="px-4 py-3.5">{item.journey}</td>
                         <td className="px-4 py-3.5 text-center font-mono">{item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}</td>
                         <td className="px-4 py-3.5 text-right font-mono">{item.mileageAmount > 0 ? `RM ${item.mileageAmount.toFixed(2)}` : '-'}</td>
@@ -568,7 +578,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               </div>
               <div className="px-3 py-1 flex justify-between bg-slate-50/50 print:bg-slate-100">
                 <span className="font-semibold text-slate-500 print:text-black">Date:</span>
-                <span className="font-bold text-slate-800 print:text-black">{claim.date}</span>
+                <span className="font-bold text-slate-800 print:text-black">{formatDate(claim.date)}</span>
               </div>
             </div>
             <div className="divide-y divide-slate-300">
@@ -614,7 +624,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     const isRejected = item.approved === false;
                     return (
                       <tr key={index} className={`odd:bg-slate-50/40 ${isRejected ? 'bg-rose-100/60 line-through text-rose-800 print:bg-rose-100 print:text-rose-950 font-medium' : ''}`}>
-                        <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{item.date}</td>
+                        <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{formatDate(item.date)}</td>
                         <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-mono">{item.checkIn}</td>
                         <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-mono">{item.checkOut}</td>
                         <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono w-[60px]">
@@ -654,7 +664,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     const isRejected = item.approved === false;
                     return (
                       <tr key={index} className={`odd:bg-slate-50/40 ${isRejected ? 'bg-rose-100/60 line-through text-rose-800 print:bg-rose-100 print:text-rose-950 font-medium' : ''}`}>
-                        <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{item.date}</td>
+                        <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{formatDate(item.date)}</td>
                         <td className="px-2 py-1 border-r border-slate-900 print:border-black print-border-dark">{item.description}</td>
                         <td className="px-2 py-1 text-right font-mono font-bold text-slate-800">
                           RM {item.amount.toFixed(2)}
@@ -697,7 +707,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     const isRejected = item.approved === false;
                     return (
                       <tr key={index} className={`odd:bg-slate-50/40 ${isRejected ? 'bg-rose-100/60 line-through text-rose-800 print:bg-rose-100 print:text-rose-950 font-medium' : ''}`}>
-                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{item.date}</td>
+                        <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark font-medium">{formatDate(item.date)}</td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark">{item.journey}</td>
                         <td className="px-1.5 py-1 border-r border-slate-900 print:border-black print-border-dark text-center font-mono text-[10px]">
                           {item.mileageDistance ? `${item.mileageDistance} (${item.vehicle === 'bike' ? 'Bike' : 'Car'})` : '-'}
@@ -806,7 +816,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     return (
                       <div key={index} className="page-break-inside-avoid border border-slate-300 rounded p-3 flex flex-col gap-1.5 bg-slate-50/50">
                         <div className="text-[11px] font-bold text-slate-800">
-                          Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} ({item.date})
+                          Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} ({formatDate(item.date)})
                         </div>
                         <div className="flex justify-center bg-white p-2 border border-slate-200 rounded max-h-[280px] overflow-hidden">
                           {imgData.startsWith('data:application/pdf') ? (

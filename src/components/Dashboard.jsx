@@ -3,6 +3,18 @@ import {
   Plus, Clock, FileText, CheckCircle, AlertCircle, XCircle, Search, Filter, ArrowRight, User, Calendar, ChevronDown, ChevronRight
 } from 'lucide-react';
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    const year = parts[0].slice(-2);
+    const month = parts[1];
+    const day = parts[2];
+    return `${day}-${month}-${year}`;
+  }
+  return dateStr;
+};
+
 export default function Dashboard({ role, claims, profile, onStartClaim, onViewClaim }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -392,7 +404,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                             }}
                                           >
                                             <td className="px-4 py-3 font-bold text-slate-200">{claim.id}</td>
-                                            <td className="px-4 py-3 text-slate-400">{claim.date}</td>
+                                            <td className="px-4 py-3 text-slate-400">{formatDate(claim.date)}</td>
                                             <td className="px-4 py-3">
                                               <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
                                                 claim.type === 'ot' 
@@ -507,7 +519,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                   <div className="flex justify-between items-start text-xs">
                                     <div>
                                       <span className="font-bold text-slate-200">{claim.id}</span>
-                                      <span className="text-slate-500 text-[10px] ml-2">{claim.date}</span>
+                                      <span className="text-slate-500 text-[10px] ml-2">{formatDate(claim.date)}</span>
                                     </div>
                                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold border ${
                                       claim.status === 'Approved'
@@ -573,7 +585,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                             <div className="font-bold text-slate-200">{claim.id}</div>
                             <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
                               <Calendar className="w-3.5 h-3.5" />
-                              {claim.date}
+                              {formatDate(claim.date)}
                             </div>
                           </td>
                           {role === 'admin' && (
@@ -640,7 +652,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="font-bold text-slate-200">{claim.id}</div>
-                          <div className="text-xs text-slate-500 mt-0.5">{claim.date}</div>
+                          <div className="text-xs text-slate-500 mt-0.5">{formatDate(claim.date)}</div>
                         </div>
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
                           claim.status === 'Approved'
