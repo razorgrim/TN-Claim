@@ -158,6 +158,9 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
         }
         
         @media print {
+          @page {
+            size: landscape;
+          }
           body {
             background: white !important;
             color: black !important;

@@ -38,6 +38,9 @@ body {
 
 /* Print styles for claim reports */
 @media print {
+  @page {
+    size: landscape;
+  }
   body {
     background-color: white !important;
     color: black !important;
