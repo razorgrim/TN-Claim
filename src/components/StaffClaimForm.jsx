@@ -49,6 +49,11 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
   const [validationError, setValidationError] = useState('');
   const [receiptPreviewUrl, setReceiptPreviewUrl] = useState(null);
 
+  const isPdf = (url) => {
+    if (!url) return false;
+    return url.startsWith('data:application/pdf') || url.endsWith('.pdf') || url.includes('.pdf');
+  };
+
   const mileageRate = profile.mileageRate || 0.60;
 
   // Calculate totals for a row
@@ -491,7 +496,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                                 className="p-1 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded border border-slate-700 transition-colors"
                                 title={`Preview proof ${rIdx + 1}`}
                               >
-                                {rcpt.startsWith('data:application/pdf') ? (
+                                {isPdf(rcpt) ? (
                                   <FileText className="w-3 h-3 text-cyan-400" />
                                 ) : (
                                   <ImageIcon className="w-3 h-3 text-slate-400" />
@@ -708,7 +713,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
                           className="p-1.5 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded border border-slate-700 transition-colors flex items-center justify-center"
                           title={`Preview proof ${rIdx + 1}`}
                         >
-                          {rcpt.startsWith('data:application/pdf') ? (
+                          {isPdf(rcpt) ? (
                             <FileText className="w-3.5 h-3.5 text-cyan-400" />
                           ) : (
                             <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
@@ -764,7 +769,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
       {/* Receipt Modal Preview */}
       {receiptPreviewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${receiptPreviewUrl.startsWith('data:application/pdf') ? 'max-w-3xl' : 'max-w-md'
+          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
             }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
@@ -778,7 +783,7 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
               </button>
             </div>
             <div className="flex justify-center bg-slate-950 p-2.5 rounded-xl border border-slate-800 max-h-[500px] overflow-auto">
-              {receiptPreviewUrl.startsWith('data:application/pdf') ? (
+              {isPdf(receiptPreviewUrl) ? (
                 <iframe
                   src={receiptPreviewUrl}
                   title="Proof PDF"

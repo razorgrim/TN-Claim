@@ -99,8 +99,13 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
   // Helper to fetch receipt image (mock SVG or user base64)
   const getReceiptImage = (receiptKey) => {
     if (!receiptKey) return null;
-    if (receiptKey.startsWith('data:')) return receiptKey;
+    if (receiptKey.startsWith('data:') || receiptKey.startsWith('/uploads/')) return receiptKey;
     return MOCK_RECEIPT_IMAGES[receiptKey] || null;
+  };
+
+  const isPdf = (url) => {
+    if (!url) return false;
+    return url.startsWith('data:application/pdf') || url.endsWith('.pdf') || url.includes('.pdf');
   };
 
   const getItemReceipts = (item) => {
@@ -395,7 +400,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                                   onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
                                   className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
                                 >
-                                  {rcpt.startsWith('data:application/pdf') ? (
+                                  {isPdf(rcpt) ? (
                                     <FileText className="w-3.5 h-3.5" />
                                   ) : (
                                     <ImageIcon className="w-3.5 h-3.5" />
@@ -457,7 +462,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                                   onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
                                   className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
                                 >
-                                  {rcpt.startsWith('data:application/pdf') ? (
+                                  {isPdf(rcpt) ? (
                                     <FileText className="w-3.5 h-3.5" />
                                   ) : (
                                     <ImageIcon className="w-3.5 h-3.5" />
@@ -540,7 +545,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                                   onClick={() => setReceiptModalUrl(getReceiptImage(rcpt))}
                                   className="text-cyan-400 hover:text-cyan-300 flex items-center justify-center gap-1 mx-auto"
                                 >
-                                  {rcpt.startsWith('data:application/pdf') ? (
+                                  {isPdf(rcpt) ? (
                                     <FileText className="w-3.5 h-3.5" />
                                   ) : (
                                     <ImageIcon className="w-3.5 h-3.5" />
@@ -888,7 +893,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                             Row #{index + 1}: {item.journey || item.reason || item.description || 'Expenses'} ({formatDate(item.date)}) {receipts.length > 1 ? `[File ${rcptIdx + 1}]` : ''}
                           </div>
                           <div className="flex justify-center bg-white p-2 border border-slate-200 rounded max-h-[280px] overflow-hidden">
-                            {imgData.startsWith('data:application/pdf') ? (
+                            {isPdf(imgData) ? (
                               <div className="flex flex-col items-center justify-center gap-1.5 text-slate-500 py-4">
                                 <FileText className="w-8 h-8 text-cyan-600" />
                                 <span className="text-[9px] font-bold uppercase tracking-wider text-center">PDF Proof Attached (Please refer to electronic submission)</span>
@@ -936,7 +941,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                     onClick={() => setReceiptModalUrl(imgData)}
                   >
                     <div className="aspect-[3/4] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center relative p-3">
-                      {imgData.startsWith('data:application/pdf') ? (
+                      {isPdf(imgData) ? (
                         <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
                           <FileText className="w-10 h-10 text-cyan-400" />
                           <span className="text-[10px] font-bold uppercase tracking-wider text-center">PDF Proof</span>
@@ -967,7 +972,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       {receiptModalUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm no-print">
           <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative animate-scale-up ${
-            receiptModalUrl.startsWith('data:application/pdf') ? 'max-w-3xl' : 'max-w-md'
+            isPdf(receiptModalUrl) ? 'max-w-3xl' : 'max-w-md'
           }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
@@ -981,7 +986,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               </button>
             </div>
             <div className="flex justify-center bg-slate-950 p-2.5 rounded-xl border border-slate-800 max-h-[500px] overflow-auto">
-              {receiptModalUrl.startsWith('data:application/pdf') ? (
+              {isPdf(receiptModalUrl) ? (
                 <iframe
                   src={receiptModalUrl}
                   title="Proof PDF"

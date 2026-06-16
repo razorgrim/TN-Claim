@@ -22,6 +22,11 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
   const [validationError, setValidationError] = useState('');
   const [receiptPreviewUrl, setReceiptPreviewUrl] = useState(null);
 
+  const isPdf = (url) => {
+    if (!url) return false;
+    return url.startsWith('data:application/pdf') || url.endsWith('.pdf') || url.includes('.pdf');
+  };
+
   const handleRowChange = (index, field, value) => {
     const updated = [...items];
     const item = { ...updated[index] };
@@ -266,7 +271,7 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                           className="p-1.5 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded-lg border border-slate-700 transition-colors"
                           title="Preview proof"
                         >
-                          {item.receipt.startsWith('data:application/pdf') ? (
+                          {isPdf(item.receipt) ? (
                             <FileText className="w-3.5 h-3.5 text-cyan-400" />
                           ) : (
                             <ImageIcon className="w-3.5 h-3.5" />
@@ -374,7 +379,7 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                       onClick={() => setReceiptPreviewUrl(item.receipt)}
                       className="p-1.5 bg-slate-850 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition-colors"
                     >
-                      {item.receipt.startsWith('data:application/pdf') ? (
+                      {isPdf(item.receipt) ? (
                         <FileText className="w-4 h-4 text-cyan-400" />
                       ) : (
                         <ImageIcon className="w-4 h-4" />
@@ -421,7 +426,7 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
       {receiptPreviewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
           <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${
-            receiptPreviewUrl.startsWith('data:application/pdf') ? 'max-w-3xl' : 'max-w-md'
+            isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
           }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
@@ -435,7 +440,7 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
               </button>
             </div>
             <div className="flex justify-center bg-slate-950 p-2.5 rounded-xl border border-slate-800 max-h-[500px] overflow-auto">
-              {receiptPreviewUrl.startsWith('data:application/pdf') ? (
+              {isPdf(receiptPreviewUrl) ? (
                 <iframe
                   src={receiptPreviewUrl}
                   title="Proof PDF"

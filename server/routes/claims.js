@@ -1,6 +1,7 @@
 import express from 'express';
 import { getDb } from '../db.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { processItemAttachments } from '../utils/upload.js';
 
 const router = express.Router();
 
@@ -94,6 +95,8 @@ router.post('/', requireAuth, async (req, res) => {
     const dateStr = new Date().toISOString().split('T')[0];
     const monthStr = dateStr.substring(0, 7);
 
+    const processedItems = processItemAttachments(items);
+
     await db.query(`
       INSERT INTO claims (id, user_id, type, date, month, status, admin_comments, totals, items)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -106,7 +109,7 @@ router.post('/', requireAuth, async (req, res) => {
       isDraft ? 'Draft' : 'Pending',
       '',
       JSON.stringify(totals),
-      JSON.stringify(items)
+      JSON.stringify(processedItems)
     ]);
 
     return res.status(201).json({ id: claimId, message: 'Claim successfully created.' });
@@ -145,6 +148,8 @@ router.put('/:id', requireAuth, async (req, res) => {
       newId = newId.replace('CLM-', 'DFT-');
     }
 
+    const processedItems = processItemAttachments(items);
+
     await db.query(`
       UPDATE claims 
       SET id = ?, status = ?, totals = ?, items = ?, date = ?
@@ -153,7 +158,7 @@ router.put('/:id', requireAuth, async (req, res) => {
       newId,
       finalStatus,
       JSON.stringify(totals),
-      JSON.stringify(items),
+      JSON.stringify(processedItems),
       new Date().toISOString().split('T')[0],
       req.params.id
     ]);
@@ -191,8 +196,9 @@ router.put('/:id/review', requireAdmin, async (req, res) => {
     const params = [status, adminComments || ''];
 
     if (items) {
+      const processedItems = processItemAttachments(items);
       query += `, items = ?`;
-      params.push(JSON.stringify(items));
+      params.push(JSON.stringify(processedItems));
     }
     if (totals) {
       query += `, totals = ?`;
@@ -230,12 +236,14 @@ router.put('/:id/admin-edit', requireAdmin, async (req, res) => {
       ? 'Approved after admin modifications.' 
       : 'Modified by admin. Pending final review.';
 
+    const processedItems = processItemAttachments(items);
+
     await db.query(`
       UPDATE claims 
       SET items = ?, totals = ?, status = ?, admin_comments = ?
       WHERE id = ?
     `, [
-      JSON.stringify(items),
+      JSON.stringify(processedItems),
       JSON.stringify(totals),
       status,
       finalComments,
