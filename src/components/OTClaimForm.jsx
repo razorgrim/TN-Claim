@@ -38,7 +38,7 @@ const calculateOT = (checkIn, checkOut, isWeekend) => {
   }
 };
 
-export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, onSubmitClaim, onCancel }) {
+export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, onSubmitClaim, onDeleteClaim, onCancel }) {
   const [items, setItems] = useState(() => {
     if (draftClaim && draftClaim.items && draftClaim.items.length > 0) {
       return draftClaim.items.map(item => ({
@@ -578,6 +578,16 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
           </button>
           
           <div className="flex flex-col sm:flex-row gap-3">
+            {draftClaim && role !== 'admin' && onDeleteClaim && (
+              <button
+                type="button"
+                onClick={() => onDeleteClaim(draftClaim.id)}
+                className="px-5 py-2.5 bg-rose-950/40 hover:bg-rose-900/45 text-rose-200 border border-rose-900/30 font-semibold rounded-xl text-sm transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+              >
+                <Trash2 className="w-4 h-4 text-rose-400" />
+                Delete Draft
+              </button>
+            )}
             <button
               type="button"
               onClick={handleSave}

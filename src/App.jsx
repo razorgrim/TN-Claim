@@ -485,6 +485,7 @@ export default function App() {
               role={user.role}
               onSaveDraft={handleSaveDraft}
               onSubmitClaim={handleSubmitClaim}
+              onDeleteClaim={handleDeleteClaim}
               onCancel={() => {
                 setActiveClaim(null);
                 setCurrentTab('dashboard');
@@ -499,6 +500,7 @@ export default function App() {
               role={user.role}
               onSaveDraft={handleSaveDraft}
               onSubmitClaim={handleSubmitClaim}
+              onDeleteClaim={handleDeleteClaim}
               onCancel={() => {
                 setActiveClaim(null);
                 setCurrentTab('dashboard');
@@ -513,6 +515,7 @@ export default function App() {
               role={user.role}
               onSaveDraft={handleSaveDraft}
               onSubmitClaim={handleSubmitClaim}
+              onDeleteClaim={handleDeleteClaim}
               onCancel={() => {
                 setActiveClaim(null);
                 setCurrentTab('dashboard');
