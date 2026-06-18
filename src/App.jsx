@@ -102,12 +102,15 @@ export default function App() {
           contact: updatedProfile.contact,
           department: updatedProfile.department
         }));
+        return true;
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to update profile.');
+        return false;
       }
     } catch (err) {
       console.error('Profile update error:', err);
+      return false;
     }
   };
 

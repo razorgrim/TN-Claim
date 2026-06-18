@@ -266,7 +266,8 @@ router.put('/profile', requireAuth, async (req, res) => {
     name: Joi.string().required(),
     ic: Joi.string().required(),
     contact: Joi.string().required(),
-    department: Joi.string().required()
+    department: Joi.string().required(),
+    password: Joi.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/).optional().allow('')
   });
 
   const { error, value } = schema.validate(req.body, { stripUnknown: true });
@@ -274,15 +275,24 @@ router.put('/profile', requireAuth, async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { name, ic, contact, department } = value;
+  const { name, ic, contact, password } = value;
   const db = getDb();
 
   try {
-    await db.query(`
-      UPDATE users 
-      SET name = ?, ic = ?, contact = ?, department = ?
-      WHERE id = ?
-    `, [name, ic, contact, department, req.user.id]);
+    if (password && password.trim().length > 0) {
+      const passwordHash = await bcrypt.hash(password, 10);
+      await db.query(`
+        UPDATE users 
+        SET name = ?, ic = ?, contact = ?, password_hash = ?
+        WHERE id = ?
+      `, [name, ic, contact, passwordHash, req.user.id]);
+    } else {
+      await db.query(`
+        UPDATE users 
+        SET name = ?, ic = ?, contact = ?
+        WHERE id = ?
+      `, [name, ic, contact, req.user.id]);
+    }
 
     return res.json({ message: 'Profile updated successfully.' });
   } catch (err) {

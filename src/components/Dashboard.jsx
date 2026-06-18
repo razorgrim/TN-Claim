@@ -22,6 +22,22 @@ const formatDate = (dateStr) => {
   return dateStr;
 };
 
+const getWelcomeName = (fullName) => {
+  if (!fullName) return '';
+  // 1. Remove everything from connectors onwards ('bin', 'binti', 'b.', 'bt.', 'a/l', 'a/p')
+  const cleanName = fullName.split(/\s+(?:bin|binti|b\.|bt\.|a\/l|a\/p)\s+/i)[0].trim();
+  // 2. Split into words
+  const words = cleanName.split(/\s+/);
+  // 3. Find the first word that is not a common prefix
+  const commonPrefixes = ['muhammad', 'mohammad', 'mhd', 'mohd', 'wan', 'nik', 'che', 'megat', 'tengku', 'tuan', 'raja', 'puteri', 'siti', 'nur', 'noor'];
+  for (const word of words) {
+    if (!commonPrefixes.includes(word.toLowerCase())) {
+      return word.toLowerCase();
+    }
+  }
+  return (words[0] || '').toLowerCase();
+};
+
 export default function Dashboard({ role, claims, profile, onStartClaim, onViewClaim }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -125,7 +141,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-            Welcome back, {role === 'admin' ? 'Finance Admin' : profile.name}
+            {role === 'admin' ? 'Welcome back, Finance Admin' : `welcome back, ${getWelcomeName(profile.name)}`}
           </h1>
           <p className="text-slate-400 mt-2">
             {role === 'admin' 
