@@ -149,17 +149,20 @@ router.put('/:id', requireAuth, async (req, res) => {
     }
 
     const processedItems = processItemAttachments(items);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const monthStr = dateStr.substring(0, 7);
 
     await db.query(`
       UPDATE claims 
-      SET id = ?, status = ?, totals = ?, items = ?, date = ?
+      SET id = ?, status = ?, totals = ?, items = ?, date = ?, month = ?
       WHERE id = ?
     `, [
       newId,
       finalStatus,
       JSON.stringify(totals),
       JSON.stringify(processedItems),
-      new Date().toISOString().split('T')[0],
+      dateStr,
+      monthStr,
       req.params.id
     ]);
 

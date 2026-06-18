@@ -42,6 +42,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState('');
+  const [monthFilter, setMonthFilter] = useState('');
   const [adminViewMode, setAdminViewMode] = useState('grouped'); // 'grouped' or 'flat'
   const [expandedFEs, setExpandedFEs] = useState({});
   const [showArchived, setShowArchived] = useState(false);
@@ -67,8 +69,10 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
     const matchesStatus = statusFilter === 'All' || claim.status === statusFilter;
     const matchesType = typeFilter === 'All' || claim.type === typeFilter;
     const matchesArchived = showArchived || !claim.is_archived || role === 'admin';
+    const matchesDate = !dateFilter || claim.date === dateFilter;
+    const matchesMonth = !monthFilter || claim.month === monthFilter;
 
-    return matchesSearch && matchesStatus && matchesType && matchesArchived;
+    return matchesSearch && matchesStatus && matchesType && matchesArchived && matchesDate && matchesMonth;
   });
 
   // Group filtered claims by employee name (for admin grouped view)
@@ -274,6 +278,58 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                 <option value="Rejected">Rejected</option>
               </select>
             </div>
+
+            {role === 'admin' && (
+              <>
+                {/* Date Filter */}
+                <div className="flex items-center bg-slate-950/80 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-400">
+                  <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                  <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => {
+                      setDateFilter(e.target.value);
+                      if (e.target.value) setMonthFilter('');
+                    }}
+                    style={{ colorScheme: 'dark' }}
+                    className="bg-transparent text-slate-300 font-medium focus:outline-none cursor-pointer"
+                  />
+                  {dateFilter && (
+                    <button
+                      type="button"
+                      onClick={() => setDateFilter('')}
+                      className="ml-1 text-slate-500 hover:text-slate-300 font-bold"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                {/* Month Filter */}
+                <div className="flex items-center bg-slate-950/80 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-400">
+                  <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                  <input
+                    type="month"
+                    value={monthFilter}
+                    onChange={(e) => {
+                      setMonthFilter(e.target.value);
+                      if (e.target.value) setDateFilter('');
+                    }}
+                    style={{ colorScheme: 'dark' }}
+                    className="bg-transparent text-slate-300 font-medium focus:outline-none cursor-pointer"
+                  />
+                  {monthFilter && (
+                    <button
+                      type="button"
+                      onClick={() => setMonthFilter('')}
+                      className="ml-1 text-slate-500 hover:text-slate-300 font-bold"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Show Archived (Staff Only) */}
             {role === 'staff' && (
