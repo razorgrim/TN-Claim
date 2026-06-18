@@ -131,16 +131,17 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
     ? groupedFEList.length 
     : filteredClaims.length;
 
-  const totalPages = Math.ceil(totalItems / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
+  const actualRowsPerPage = rowsPerPage === 'All' ? totalItems : Number(rowsPerPage);
+  const totalPages = Math.ceil(totalItems / actualRowsPerPage) || 1;
+  const startIndex = (currentPage - 1) * actualRowsPerPage;
 
   const paginatedGroupedFEList = role === 'admin' && adminViewMode === 'grouped'
-    ? groupedFEList.slice(startIndex, startIndex + rowsPerPage)
+    ? (rowsPerPage === 'All' ? groupedFEList : groupedFEList.slice(startIndex, startIndex + actualRowsPerPage))
     : [];
 
   const paginatedFilteredClaims = role === 'admin' && adminViewMode === 'grouped'
     ? []
-    : filteredClaims.slice(startIndex, startIndex + rowsPerPage);
+    : (rowsPerPage === 'All' ? filteredClaims : filteredClaims.slice(startIndex, startIndex + actualRowsPerPage));
 
   const getPageNumbers = () => {
     const pages = [];
@@ -833,7 +834,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                   <select
                     value={rowsPerPage}
                     onChange={(e) => {
-                      setRowsPerPage(Number(e.target.value));
+                      const val = e.target.value === 'All' ? 'All' : Number(e.target.value);
+                      setRowsPerPage(val);
                       setCurrentPage(1);
                     }}
                     className="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-slate-300 font-semibold focus:outline-none cursor-pointer focus:border-cyan-500 transition-colors"
@@ -842,10 +844,11 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
+                    <option value="All">All</option>
                   </select>
                 </div>
                 <span>
-                  Showing {totalItems === 0 ? 0 : startIndex + 1} to {Math.min(startIndex + rowsPerPage, totalItems)} of {totalItems} entries
+                  Showing {totalItems === 0 ? 0 : startIndex + 1} to {Math.min(startIndex + actualRowsPerPage, totalItems)} of {totalItems} entries
                 </span>
               </div>
               
