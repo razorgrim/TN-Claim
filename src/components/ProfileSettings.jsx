@@ -24,19 +24,19 @@ export default function ProfileSettings({ profile, onUpdateProfile }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password) {
       if (password.length < 8) {
         setLocalError('Password must be at least 8 characters long.');
         return;
       }
-      
+
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
       if (!passwordRegex.test(password)) {
         setLocalError('Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.');
         return;
       }
-      
+
       if (password !== confirmPassword) {
         setLocalError('Passwords do not match.');
         return;
@@ -67,11 +67,9 @@ export default function ProfileSettings({ profile, onUpdateProfile }) {
 
       <h2 className="text-2xl font-bold text-slate-100 mb-6 flex items-center gap-2">
         <User className="w-6 h-6 text-cyan-400" />
-        Employee Profile Settings
+        Profile Settings
       </h2>
-      <p className="text-slate-400 text-sm mb-8">
-        Your profile details pre-fill all claim sheets. These details are securely stored in the system.
-      </p>
+
 
       {showSavedToast && (
         <div className="mb-6 p-4 bg-emerald-500/20 border border-emerald-500/50 rounded-xl flex items-center gap-3 text-emerald-300 animate-fade-in">
@@ -163,7 +161,7 @@ export default function ProfileSettings({ profile, onUpdateProfile }) {
           <p className="text-slate-400 text-xs">
             Leave blank if you do not want to change your password. New password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* New Password */}
             <div className="space-y-2">

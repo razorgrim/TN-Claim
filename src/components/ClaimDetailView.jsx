@@ -233,8 +233,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
               onClick={handlePrint}
               disabled={!allRowsApproved}
               className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all border ${!allRowsApproved
-                  ? 'bg-slate-800/40 text-slate-500 border-slate-800 cursor-not-allowed opacity-50'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 active:scale-95 cursor-pointer'
+                ? 'bg-slate-800/40 text-slate-500 border-slate-800 cursor-not-allowed opacity-50'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 active:scale-95 cursor-pointer'
                 }`}
             >
               <Printer className={`w-4 h-4 ${!allRowsApproved ? 'text-slate-500' : 'text-cyan-400'}`} />
@@ -293,8 +293,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
       {/* View Review Status (Staff / Completed Review) - Hidden during print */}
       {claim.status !== 'Pending' && (
         <div className={`p-4 rounded-xl border no-print flex items-center justify-between gap-4 ${claim.status === 'Approved'
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-            : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
+          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+          : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
           }`}>
           <div className="flex items-center gap-3">
             {claim.status === 'Approved' ? (
@@ -320,10 +320,10 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
           {/* Admin Summary Card */}
           <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-6 space-y-4">
             <h3 className="font-bold text-slate-100 text-lg border-b border-slate-800 pb-3 flex justify-between items-center">
-              <span>Claim Summary - {claim.type === 'ot' ? 'Overtime' : claim.type === 'others' ? 'Others' : 'General'}</span>
+              <span> {claim.type === 'ot' ? 'Overtime' : claim.type === 'others' ? 'Others' : 'General'} Claim - Submitted On {formatDate(claim.date)}</span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase ${claim.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                  claim.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                    'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                claim.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                  'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                 }`}>
                 {claim.status}
               </span>
@@ -334,18 +334,6 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 <span className="text-slate-200 font-semibold">{claim.employeeName}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-xs">IC Number</span>
-                <span className="text-slate-200 font-semibold">{claim.ic}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block text-xs">Department</span>
-                <span className="text-slate-200 font-semibold">{claim.department}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block text-xs">Contact</span>
-                <span className="text-slate-200 font-semibold">{claim.contact}</span>
-              </div>
-              <div>
                 <span className="text-slate-400 block text-xs">Claim Month</span>
                 <span className="text-slate-200 font-semibold">{claim.month || claim.date.substring(0, 7)}</span>
               </div>
@@ -353,13 +341,14 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
                 <span className="text-slate-400 block text-xs">Submitted On</span>
                 <span className="text-slate-200 font-semibold">{formatDate(claim.date)}</span>
               </div>
+
             </div>
           </div>
 
           {/* Admin Claims Table */}
           <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800 p-6 shadow-xl space-y-4">
             <h3 className="font-bold text-slate-100 flex items-center justify-between">
-              <span>Claim Rows Checklist</span>
+              <span>Lists of Claim</span>
               <span className="text-xs text-slate-400 font-normal">
                 {claim.status === 'Pending' ? 'Uncheck rows to reject specific line items.' : 'Read-only view of processed claim rows.'}
               </span>

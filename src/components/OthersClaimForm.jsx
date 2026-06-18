@@ -160,9 +160,9 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
             {role === 'admin' ? 'Admin Edit Mode — Others Claim' : 'Others Claim Form'}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            {role === 'admin' 
-              ? `Reviewing and correcting miscellaneous operational claims for ${draftClaim ? draftClaim.employeeName : 'staff'}.` 
-              : 'Total Neutron Solution Sdn Bhd — Enter miscellaneous claims that are not covered under Mileage, Toll, Medical, or OT.'}
+            {role === 'admin'
+              ? `Reviewing and correcting miscellaneous operational claims for ${draftClaim ? draftClaim.employeeName : 'staff'}.`
+              : 'Miscellaneous claims that are not covered under Mileage, Toll, Medical, or OT.'}
           </p>
         </div>
 
@@ -226,9 +226,8 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                       value={item.description}
                       required
                       onChange={(e) => handleRowChange(index, 'description', e.target.value)}
-                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${
-                        !item.description.trim() ? 'border-amber-500/50' : 'border-slate-700'
-                      }`}
+                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${!item.description.trim() ? 'border-amber-500/50' : 'border-slate-700'
+                        }`}
                     />
                   </td>
 
@@ -242,20 +241,18 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                       value={item.amount || ''}
                       required
                       onChange={(e) => handleRowChange(index, 'amount', e.target.value)}
-                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono ${
-                        !(item.amount > 0) ? 'border-amber-500/50' : 'border-slate-700'
-                      }`}
+                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono ${!(item.amount > 0) ? 'border-amber-500/50' : 'border-slate-700'
+                        }`}
                     />
                   </td>
 
                   {/* Proof Upload */}
                   <td className="px-2 py-3">
                     <div className="flex items-center gap-2">
-                      <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
-                        item.receipt 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                          : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
-                      }`}>
+                      <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${item.receipt
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        : 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                        }`}>
                         <Upload className="w-3.5 h-3.5 shrink-0" />
                         <span>{item.receipt ? 'Attached' : 'Upload'}</span>
                         <input
@@ -336,9 +333,8 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                   placeholder="e.g. postage, refreshments, stationeries"
                   value={item.description}
                   onChange={(e) => handleRowChange(index, 'description', e.target.value)}
-                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 ${
-                    !item.description.trim() ? 'border-amber-500/50' : 'border-slate-700'
-                  }`}
+                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 ${!item.description.trim() ? 'border-amber-500/50' : 'border-slate-700'
+                    }`}
                 />
               </div>
 
@@ -351,20 +347,18 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                   placeholder="0.00"
                   value={item.amount || ''}
                   onChange={(e) => handleRowChange(index, 'amount', e.target.value)}
-                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono ${
-                    !(item.amount > 0) ? 'border-amber-500/50' : 'border-slate-700'
-                  }`}
+                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono ${!(item.amount > 0) ? 'border-amber-500/50' : 'border-slate-700'
+                    }`}
                 />
               </div>
 
               <div className="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
                 <span className="text-xs font-semibold text-slate-400">Claim Proof:</span>
                 <div className="flex items-center gap-2">
-                  <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${
-                    item.receipt 
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                      : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                  }`}>
+                  <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${item.receipt
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
+                    }`}>
                     <Upload className="w-3.5 h-3.5" />
                     <span>{item.receipt ? 'Attached' : 'Capture Proof'}</span>
                     <input
@@ -403,7 +397,7 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
             <Plus className="w-4 h-4 text-purple-400" />
             Add Claim Item
           </button>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             {draftClaim && role !== 'admin' && onDeleteClaim && (
               <button
@@ -436,9 +430,8 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
       {/* Receipt Modal Preview */}
       {receiptPreviewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${
-            isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
-          }`}>
+          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
+            }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
                 <FileText className="w-5 h-5 text-cyan-400" /> Proof Preview
@@ -458,9 +451,9 @@ export default function OthersClaimForm({ profile, draftClaim, role, onSaveDraft
                   className="w-full h-[400px] rounded-lg border-none bg-white"
                 />
               ) : (
-                <img 
-                  src={receiptPreviewUrl} 
-                  alt="Proof attachment" 
+                <img
+                  src={receiptPreviewUrl}
+                  alt="Proof attachment"
                   className="max-w-full h-auto object-contain rounded-lg"
                 />
               )}

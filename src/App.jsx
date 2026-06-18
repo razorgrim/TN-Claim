@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   LayoutDashboard, UserSquare, LogOut, ShieldAlert, Loader, Users, FileText
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
@@ -16,7 +16,7 @@ export default function App() {
   const [claims, setClaims] = useState([]);
   const [currentTab, setCurrentTab] = useState('dashboard'); // 'dashboard', 'profile', 'new-ot', 'new-general', 'new-others', 'view'
   const [activeClaim, setActiveClaim] = useState(null);
-  
+
   const [loading, setLoading] = useState(true); // app loading session check
   const [claimsLoading, setClaimsLoading] = useState(false);
 
@@ -58,7 +58,7 @@ export default function App() {
   // Live updates polling for dashboard
   useEffect(() => {
     if (!user || currentTab !== 'dashboard') return;
-    
+
     // Fetch immediately
     fetchClaims();
 
@@ -131,7 +131,7 @@ export default function App() {
       if (res.ok) {
         const freshClaim = await res.json();
         setActiveClaim(freshClaim);
-        
+
         if (freshClaim.status === 'Draft' && user.role === 'staff') {
           if (freshClaim.type === 'ot') {
             setCurrentTab('new-ot');
@@ -385,7 +385,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
             <span className="font-display font-extrabold text-xs sm:text-sm tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-slate-300">
-              TOTAL NEUTRON CLAIMS
+              TOTAL NEUTRON SOLUTION SDN BHD
             </span>
           </div>
 
@@ -393,9 +393,8 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div className="hidden md:flex flex-col text-right">
               <span className="text-xs font-bold text-slate-200">{user.name}</span>
-              <span className={`text-[10px] font-extrabold uppercase tracking-widest mt-0.5 ${
-                user.role === 'admin' ? 'text-amber-400' : 'text-cyan-400'
-              }`}>
+              <span className={`text-[10px] font-extrabold uppercase tracking-widest mt-0.5 ${user.role === 'admin' ? 'text-amber-400' : 'text-cyan-400'
+                }`}>
                 {user.role === 'admin' ? 'Finance Admin' : 'Staff Account'}
               </span>
             </div>
@@ -412,17 +411,16 @@ export default function App() {
 
       {/* Main Body */}
       <main className="flex-1 max-w-none w-full mx-auto px-4 sm:px-6 lg:px-10 py-8">
-        
+
         {/* Navigation Tabs - Hidden during print */}
         {currentTab !== 'new-ot' && currentTab !== 'new-general' && currentTab !== 'new-others' && currentTab !== 'view' && (
           <div className="no-print flex border-b border-slate-800 mb-8 gap-1.5">
             <button
               onClick={() => setCurrentTab('dashboard')}
-              className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
-                currentTab === 'dashboard'
-                  ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
-                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-              }`}
+              className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${currentTab === 'dashboard'
+                ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                }`}
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
@@ -431,11 +429,10 @@ export default function App() {
             {user.role === 'staff' && (
               <button
                 onClick={() => setCurrentTab('profile')}
-                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
-                  currentTab === 'profile'
-                    ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
-                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${currentTab === 'profile'
+                  ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
+                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  }`}
               >
                 <UserSquare className="w-4 h-4" />
                 Profile Settings
@@ -445,11 +442,10 @@ export default function App() {
             {user.role === 'admin' && (
               <button
                 onClick={() => setCurrentTab('manage-staff')}
-                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${
-                  currentTab === 'manage-staff'
-                    ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
-                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all cursor-pointer ${currentTab === 'manage-staff'
+                  ? 'border-cyan-400 text-cyan-400 bg-cyan-400/5'
+                  : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  }`}
               >
                 <Users className="w-4 h-4" />
                 Manage Staff
@@ -461,7 +457,7 @@ export default function App() {
         {/* View Routing */}
         <div>
           {currentTab === 'dashboard' && (
-            <Dashboard 
+            <Dashboard
               role={user.role}
               claims={claims}
               profile={user}
@@ -471,7 +467,7 @@ export default function App() {
           )}
 
           {currentTab === 'profile' && user.role === 'staff' && (
-            <ProfileSettings 
+            <ProfileSettings
               profile={user}
               onUpdateProfile={handleUpdateProfile}
             />
@@ -482,7 +478,7 @@ export default function App() {
           )}
 
           {currentTab === 'new-ot' && (
-            <OTClaimForm 
+            <OTClaimForm
               profile={user}
               draftClaim={activeClaim}
               role={user.role}
@@ -497,7 +493,7 @@ export default function App() {
           )}
 
           {currentTab === 'new-general' && (
-            <StaffClaimForm 
+            <StaffClaimForm
               profile={user}
               draftClaim={activeClaim}
               role={user.role}
@@ -512,7 +508,7 @@ export default function App() {
           )}
 
           {currentTab === 'new-others' && (
-            <OthersClaimForm 
+            <OthersClaimForm
               profile={user}
               draftClaim={activeClaim}
               role={user.role}
@@ -527,7 +523,7 @@ export default function App() {
           )}
 
           {currentTab === 'view' && activeClaim && (
-            <ClaimDetailView 
+            <ClaimDetailView
               role={user.role}
               claim={activeClaim}
               onBack={() => {

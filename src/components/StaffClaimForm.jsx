@@ -278,12 +278,12 @@ export default function StaffClaimForm({ profile, draftClaim, role, onSaveDraft,
         <div className="border-b border-slate-800 pb-5 mb-6">
           <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center gap-2">
             <FileText className="w-6 h-6 text-blue-400" />
-            {role === 'admin' ? 'Admin Edit Mode — General Staff Claim' : 'General Staff Claim Form'}
+            {role === 'admin' ? 'Admin Edit Mode — General Staff Claim' : 'General Claim Form'}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
             {role === 'admin'
               ? `Reviewing and correcting mileage, toll, medical, or other claims for ${draftClaim ? draftClaim.employeeName : 'staff'}.`
-              : 'Total Neutron Solution Sdn Bhd — Enter travel mileage, toll, medical, or other operational claims.'}
+              : 'Enter travel mileage, toll, medical, or other operational claims.'}
           </p>
         </div>
 

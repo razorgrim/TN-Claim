@@ -22,7 +22,7 @@ const calculateOT = (checkIn, checkOut, isWeekend) => {
   }
 
   const totalHours = (outH * 60 + outM - (inH * 60 + inM)) / 60;
-  
+
   // Rule:
   // Weekday: OT calculated after 9 working hours (Total Hours - 9)
   // Weekend: OT claimed fully (all hours worked count as OT)
@@ -233,9 +233,9 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
             {role === 'admin' ? 'Admin Edit Mode — Overtime Claim' : 'Overtime (OT) Claim Form'}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            {role === 'admin' 
-              ? `Reviewing and correcting overtime hours for ${draftClaim ? draftClaim.employeeName : 'staff'}.` 
-              : 'Total Neutron Solution Sdn Bhd — Fill in the hours worked. Calculations are made automatically.'}
+            {role === 'admin'
+              ? `Reviewing and correcting overtime hours for ${draftClaim ? draftClaim.employeeName : 'staff'}.`
+              : 'Fill in the hours worked. Calculations are made automatically.'}
           </p>
         </div>
 
@@ -276,7 +276,7 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                 <th className="px-3 py-3 w-[220px]">OT Reason (Compulsory)</th>
                 <th className="px-3 py-3 w-[150px]">Authorized By</th>
                 <th className="px-3 py-3 w-[120px]">Proof</th>
-                <th className="px-3 py-3 w-[70px] text-center">OT (Hr)</th>
+                <th className="px-3 py-3 w-[70px] text-center">OT (Hour)</th>
                 <th className="px-3 py-3 w-[50px]"></th>
               </tr>
             </thead>
@@ -348,9 +348,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                       value={item.reason}
                       required
                       onChange={(e) => handleRowChange(index, 'reason', e.target.value)}
-                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${
-                        !item.reason.trim() ? 'border-amber-500/50' : 'border-slate-700'
-                      }`}
+                      className={`w-full bg-slate-950 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${!item.reason.trim() ? 'border-amber-500/50' : 'border-slate-700'
+                        }`}
                     />
                   </td>
 
@@ -372,13 +371,12 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                   {/* Proof Upload */}
                   <td className="px-2 py-3">
                     <div className="flex items-center gap-2">
-                      <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${
-                        item.receipt 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                          : (item.weekdayHours > 0 || item.weekendHours > 0) 
-                          ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20' 
+                      <label className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${item.receipt
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        : (item.weekdayHours > 0 || item.weekendHours > 0)
+                          ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
                           : 'bg-slate-950 border-slate-700 text-slate-400 hover:bg-slate-800'
-                      }`}>
+                        }`}>
                         <Upload className="w-3.5 h-3.5 shrink-0" />
                         <span>{item.receipt ? 'Attached' : 'Upload'}</span>
                         <input
@@ -506,9 +504,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                   placeholder="Compulsory reason for overtime"
                   value={item.reason}
                   onChange={(e) => handleRowChange(index, 'reason', e.target.value)}
-                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${
-                    !item.reason.trim() ? 'border-amber-500/50' : 'border-slate-700'
-                  }`}
+                  className={`w-full bg-slate-900 border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 ${!item.reason.trim() ? 'border-amber-500/50' : 'border-slate-700'
+                    }`}
                 />
               </div>
 
@@ -531,13 +528,12 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
               <div className="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
                 <span className="text-xs font-semibold text-slate-400">Overtime Proof:</span>
                 <div className="flex items-center gap-2">
-                  <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${
-                    item.receipt 
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                      : (item.weekdayHours > 0 || item.weekendHours > 0)
+                  <label className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition-all ${item.receipt
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : (item.weekdayHours > 0 || item.weekendHours > 0)
                       ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
                       : 'bg-slate-950 border-slate-700 text-slate-400'
-                  }`}>
+                    }`}>
                     <Upload className="w-3.5 h-3.5" />
                     <span>{item.receipt ? 'Attached' : 'Capture Proof'}</span>
                     <input
@@ -576,7 +572,7 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
             <Plus className="w-4 h-4 text-cyan-400" />
             Add Day Entry
           </button>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             {draftClaim && role !== 'admin' && onDeleteClaim && (
               <button
@@ -609,9 +605,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
       {/* Receipt Modal Preview */}
       {receiptPreviewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${
-            isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
-          }`}>
+          <div className={`bg-slate-900 rounded-2xl border border-slate-800 w-full p-5 shadow-2xl relative ${isPdf(receiptPreviewUrl) ? 'max-w-3xl' : 'max-w-md'
+            }`}>
             <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
               <h3 className="font-bold text-slate-100 flex items-center gap-1.5">
                 <FileText className="w-5 h-5 text-cyan-400" /> Proof Preview
@@ -631,9 +626,9 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
                   className="w-full h-[400px] rounded-lg border-none bg-white"
                 />
               ) : (
-                <img 
-                  src={receiptPreviewUrl} 
-                  alt="Proof attachment" 
+                <img
+                  src={receiptPreviewUrl}
+                  alt="Proof attachment"
                   className="max-w-full h-auto object-contain rounded-lg"
                 />
               )}

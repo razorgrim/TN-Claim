@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   Plus, Clock, FileText, CheckCircle, AlertCircle, XCircle, Search, Filter, ArrowRight, User, Calendar, ChevronDown, ChevronRight
 } from 'lucide-react';
 
@@ -62,16 +62,16 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
   };
 
   // Filter claims based on role and search criteria
-  const userClaims = role === 'admin' 
-    ? claims 
+  const userClaims = role === 'admin'
+    ? claims
     : claims.filter(c => c.employeeName.toLowerCase() === profile.name.toLowerCase());
 
   const filteredClaims = userClaims.filter(claim => {
-    const matchesSearch = 
+    const matchesSearch =
       claim.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'All' || claim.status === statusFilter;
     const matchesType = typeFilter === 'All' || claim.type === typeFilter;
     const matchesArchived = showArchived || !claim.is_archived || role === 'admin';
@@ -107,11 +107,11 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
       if (claim.status === 'Pending') {
         fe.pendingClaims += 1;
       }
-      
+
       const isApproved = claim.status === 'Approved';
       const isPending = claim.status === 'Pending';
       const isOT = claim.type === 'ot';
-      
+
       if (isOT) {
         const wk = claim.totals.weekdayHours || 0;
         const we = claim.totals.weekendHours || 0;
@@ -127,8 +127,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
   }
   const groupedFEList = Object.values(groupedFEs);
 
-  const totalItems = role === 'admin' && adminViewMode === 'grouped' 
-    ? groupedFEList.length 
+  const totalItems = role === 'admin' && adminViewMode === 'grouped'
+    ? groupedFEList.length
     : filteredClaims.length;
 
   const actualRowsPerPage = rowsPerPage === 'All' ? totalItems : Number(rowsPerPage);
@@ -195,9 +195,9 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
             {role === 'admin' ? 'Welcome back, Finance Admin' : `welcome back, ${getWelcomeName(profile.name)}`}
           </h1>
           <p className="text-slate-400 mt-2">
-            {role === 'admin' 
-              ? 'Review and manage employee claim forms for Total Neutron Solution.' 
-              : `Create and track your claims. Current department: ${profile.department}`}
+            {role === 'admin'
+              ? 'Review and manage employee claim forms for Total Neutron Solution.'
+              : `Create and track your claims. Department: ${profile.department}`}
           </p>
         </div>
         {role === 'staff' && (
@@ -263,7 +263,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
               {role === 'admin' ? 'Total Approved Payout' : 'Approved Claims'}
             </p>
             <h3 className="text-2xl font-bold text-slate-100 mt-1">
-              {role === 'admin' 
+              {role === 'admin'
                 ? `RM ${approvedClaims.reduce((acc, c) => acc + (c.type !== 'ot' ? getGeneralGrandTotal(c) : 0), 0).toFixed(2)}`
                 : approvedClaims.length}
             </h3>
@@ -277,12 +277,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
         {/* Table Filters */}
         <div className="p-6 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            Claims Register
+            Claim Submision
             <span className="text-xs font-semibold px-2.5 py-0.5 bg-slate-800 text-slate-400 rounded-full">
               {filteredClaims.length}
             </span>
           </h2>
-          
+
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Bar */}
             <div className="relative min-w-[200px]">
@@ -397,22 +397,20 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                 <button
                   type="button"
                   onClick={() => setAdminViewMode('grouped')}
-                  className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
-                    adminViewMode === 'grouped' 
-                      ? 'bg-cyan-500 text-slate-950 shadow font-bold' 
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${adminViewMode === 'grouped'
+                    ? 'bg-cyan-500 text-slate-950 shadow font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                    }`}
                 >
                   Grouped by FE
                 </button>
                 <button
                   type="button"
                   onClick={() => setAdminViewMode('flat')}
-                  className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
-                    adminViewMode === 'flat' 
-                      ? 'bg-cyan-500 text-slate-950 shadow font-bold' 
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${adminViewMode === 'flat'
+                    ? 'bg-cyan-500 text-slate-950 shadow font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                    }`}
                 >
                   Flat List
                 </button>
@@ -451,7 +449,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                         const isExpanded = !!expandedFEs[fe.employeeName];
                         return (
                           <React.Fragment key={fe.employeeName}>
-                            <tr 
+                            <tr
                               className="hover:bg-slate-800/10 transition-colors cursor-pointer group"
                               onClick={() => toggleFE(fe.employeeName)}
                             >
@@ -521,8 +519,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                       </thead>
                                       <tbody className="divide-y divide-slate-800/40">
                                         {fe.claims.map((claim) => (
-                                          <tr 
-                                            key={claim.id} 
+                                          <tr
+                                            key={claim.id}
                                             className="hover:bg-slate-900/60 transition-colors cursor-pointer group"
                                             onClick={(e) => {
                                               e.stopPropagation();
@@ -532,13 +530,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                             <td className="px-4 py-3 font-bold text-slate-200">{claim.id}</td>
                                             <td className="px-4 py-3 text-slate-400">{formatDate(claim.date)}</td>
                                             <td className="px-4 py-3">
-                                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
-                                                claim.type === 'ot' 
-                                                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-                                                  : claim.type === 'others'
+                                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${claim.type === 'ot'
+                                                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                                                : claim.type === 'others'
                                                   ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                                                   : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                              }`}>
+                                                }`}>
                                                 {claim.type === 'ot' ? 'OT Claim' : claim.type === 'others' ? 'Others' : 'General'}
                                               </span>
                                             </td>
@@ -546,13 +543,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                               {getClaimTotalDisplay(claim)}
                                             </td>
                                             <td className="px-4 py-3 text-center">
-                                              <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                                                claim.status === 'Approved'
-                                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                                                  : claim.status === 'Rejected'
+                                              <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${claim.status === 'Approved'
+                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                                : claim.status === 'Rejected'
                                                   ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                                                   : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                                              }`}>
+                                                }`}>
                                                 {claim.status}
                                               </span>
                                             </td>
@@ -583,7 +579,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                     const isExpanded = !!expandedFEs[fe.employeeName];
                     return (
                       <div key={fe.employeeName} className="flex flex-col">
-                        <div 
+                        <div
                           onClick={() => toggleFE(fe.employeeName)}
                           className="p-5 hover:bg-slate-800/10 active:bg-slate-800/20 transition-colors flex justify-between items-center cursor-pointer"
                         >
@@ -593,7 +589,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                               {fe.employeeName}
                             </div>
                             <div className="text-xs text-slate-500 mt-1 truncate">{fe.department}</div>
-                            
+
                             <div className="flex flex-wrap items-center gap-2 mt-2">
                               <span className="px-2 py-0.5 bg-slate-800 text-[10px] text-slate-400 rounded font-bold border border-slate-700">
                                 {fe.totalClaims} claims
@@ -604,7 +600,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                 </span>
                               )}
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-2 mt-3 text-[10px] font-mono border-t border-slate-850 pt-2 text-slate-400">
                               <div>
                                 <span className="text-slate-500 font-bold">Claims:</span>
@@ -634,8 +630,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                             </div>
                             <div className="divide-y divide-slate-850 flex flex-col gap-2">
                               {fe.claims.map((claim) => (
-                                <div 
-                                  key={claim.id} 
+                                <div
+                                  key={claim.id}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     onViewClaim(claim);
@@ -647,24 +643,22 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                       <span className="font-bold text-slate-200">{claim.id}</span>
                                       <span className="text-slate-500 text-[10px] ml-2">{formatDate(claim.date)}</span>
                                     </div>
-                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold border ${
-                                      claim.status === 'Approved'
-                                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                                        : claim.status === 'Rejected'
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold border ${claim.status === 'Approved'
+                                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                      : claim.status === 'Rejected'
                                         ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                                         : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                                    }`}>
+                                      }`}>
                                       {claim.status}
                                     </span>
                                   </div>
                                   <div className="flex justify-between items-center text-xs">
-                                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                                      claim.type === 'ot' 
-                                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-                                        : claim.type === 'others'
+                                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${claim.type === 'ot'
+                                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                                      : claim.type === 'others'
                                         ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                                         : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                    }`}>
+                                      }`}>
                                       {claim.type === 'ot' ? 'OT Claim' : claim.type === 'others' ? 'Others Claim' : 'General'}
                                     </span>
                                     <span className="font-mono font-bold text-slate-350">
@@ -702,8 +696,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                     </thead>
                     <tbody className="divide-y divide-slate-800/60">
                       {paginatedFilteredClaims.map((claim) => (
-                        <tr 
-                          key={claim.id} 
+                        <tr
+                          key={claim.id}
                           className="hover:bg-slate-800/20 transition-colors cursor-pointer group"
                           onClick={() => onViewClaim(claim)}
                         >
@@ -724,13 +718,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                             </td>
                           )}
                           <td className="px-6 py-4.5">
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                              claim.type === 'ot' 
-                                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-                                : claim.type === 'others'
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${claim.type === 'ot'
+                              ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                              : claim.type === 'others'
                                 ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                                 : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                            }`}>
+                              }`}>
                               {claim.type === 'ot' ? 'Overtime (OT)' : claim.type === 'others' ? 'Others Claim' : 'General Claim'}
                             </span>
                           </td>
@@ -738,20 +731,18 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                             {getClaimTotalDisplay(claim)}
                           </td>
                           <td className="px-6 py-4.5 text-center">
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
-                              claim.status === 'Approved'
-                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                                : claim.status === 'Rejected'
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${claim.status === 'Approved'
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                              : claim.status === 'Rejected'
                                 ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                                 : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                            }`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${
-                                claim.status === 'Approved'
-                                  ? 'bg-emerald-400'
-                                  : claim.status === 'Rejected'
+                              }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${claim.status === 'Approved'
+                                ? 'bg-emerald-400'
+                                : claim.status === 'Rejected'
                                   ? 'bg-rose-400'
                                   : 'bg-amber-400 animate-pulse'
-                              }`} />
+                                }`} />
                               {claim.status}
                             </span>
                           </td>
@@ -770,8 +761,8 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                 {/* Mobile View (Cards) */}
                 <div className="md:hidden divide-y divide-slate-800/60">
                   {paginatedFilteredClaims.map((claim) => (
-                    <div 
-                      key={claim.id} 
+                    <div
+                      key={claim.id}
                       onClick={() => onViewClaim(claim)}
                       className="p-5 hover:bg-slate-800/10 active:bg-slate-800/20 transition-colors flex flex-col gap-4"
                     >
@@ -780,16 +771,14 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                           <div className="font-bold text-slate-200">{claim.id}</div>
                           <div className="text-xs text-slate-500 mt-0.5">{formatDate(claim.date)}</div>
                         </div>
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                          claim.status === 'Approved'
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                            : claim.status === 'Rejected'
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${claim.status === 'Approved'
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          : claim.status === 'Rejected'
                             ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                             : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${
-                            claim.status === 'Approved' ? 'bg-emerald-400' : claim.status === 'Rejected' ? 'bg-rose-400' : 'bg-amber-400'
-                          }`} />
+                          }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${claim.status === 'Approved' ? 'bg-emerald-400' : claim.status === 'Rejected' ? 'bg-rose-400' : 'bg-amber-400'
+                            }`} />
                           {claim.status}
                         </span>
                       </div>
@@ -802,13 +791,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                       )}
 
                       <div className="flex items-center justify-between text-sm">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${
-                          claim.type === 'ot' 
-                            ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-                            : claim.type === 'others'
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${claim.type === 'ot'
+                          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                          : claim.type === 'others'
                             ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                             : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                        }`}>
+                          }`}>
                           {claim.type === 'ot' ? 'OT Claim' : claim.type === 'others' ? 'Others Claim' : 'General Claim'}
                         </span>
                         <span className="font-mono font-bold text-slate-200">
@@ -851,22 +839,21 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                   Showing {totalItems === 0 ? 0 : startIndex + 1} to {Math.min(startIndex + actualRowsPerPage, totalItems)} of {totalItems} entries
                 </span>
               </div>
-              
+
               {totalPages > 1 && (
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${
-                      currentPage === 1
-                        ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
-                        : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
-                    }`}
+                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${currentPage === 1
+                      ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
+                      : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
+                      }`}
                   >
                     Prev
                   </button>
-                  
+
                   {getPageNumbers().map((pageNum, idx) => {
                     if (pageNum === '...') {
                       return (
@@ -880,26 +867,24 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                         key={`page-${pageNum}`}
                         type="button"
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all select-none cursor-pointer ${
-                          currentPage === pageNum
-                            ? 'bg-cyan-500 text-slate-950 font-bold shadow'
-                            : 'border border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white'
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all select-none cursor-pointer ${currentPage === pageNum
+                          ? 'bg-cyan-500 text-slate-950 font-bold shadow'
+                          : 'border border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white'
+                          }`}
                       >
                         {pageNum}
                       </button>
                     );
                   })}
-                  
+
                   <button
                     type="button"
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${
-                      currentPage === totalPages
-                        ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
-                        : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
-                    }`}
+                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${currentPage === totalPages
+                      ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
+                      : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
+                      }`}
                   >
                     Next
                   </button>

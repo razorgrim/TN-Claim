@@ -47,7 +47,7 @@ export default function Login({ onLoginSuccess }) {
             Staff Claim Portal
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Total Neutron Solution Sdn Bhd — Secure Employee Log In
+            Total Neutron Solution Sdn Bhd
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export default function Login({ onLoginSuccess }) {
             ) : (
               <>
                 <Shield className="w-4 h-4 stroke-[2.5]" />
-                <span>Log In Securely</span>
+                <span>Log In </span>
               </>
             )}
           </button>
