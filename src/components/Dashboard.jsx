@@ -47,6 +47,12 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
   const [adminViewMode, setAdminViewMode] = useState('grouped'); // 'grouped' or 'flat'
   const [expandedFEs, setExpandedFEs] = useState({});
   const [showArchived, setShowArchived] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, typeFilter, dateFilter, monthFilter, showArchived, adminViewMode]);
 
   const toggleFE = (feName) => {
     setExpandedFEs(prev => ({
@@ -120,6 +126,46 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
     });
   }
   const groupedFEList = Object.values(groupedFEs);
+
+  const totalItems = role === 'admin' && adminViewMode === 'grouped' 
+    ? groupedFEList.length 
+    : filteredClaims.length;
+
+  const totalPages = Math.ceil(totalItems / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+
+  const paginatedGroupedFEList = role === 'admin' && adminViewMode === 'grouped'
+    ? groupedFEList.slice(startIndex, startIndex + rowsPerPage)
+    : [];
+
+  const paginatedFilteredClaims = role === 'admin' && adminViewMode === 'grouped'
+    ? []
+    : filteredClaims.slice(startIndex, startIndex + rowsPerPage);
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   // Calculate statistics
   const pendingClaims = userClaims.filter(c => c.status === 'Pending');
@@ -400,7 +446,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800/60">
-                      {groupedFEList.map((fe) => {
+                      {paginatedGroupedFEList.map((fe) => {
                         const isExpanded = !!expandedFEs[fe.employeeName];
                         return (
                           <React.Fragment key={fe.employeeName}>
@@ -532,7 +578,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
 
                 {/* Mobile Grouped Cards */}
                 <div className="md:hidden divide-y divide-slate-800/60">
-                  {groupedFEList.map((fe) => {
+                  {paginatedGroupedFEList.map((fe) => {
                     const isExpanded = !!expandedFEs[fe.employeeName];
                     return (
                       <div key={fe.employeeName} className="flex flex-col">
@@ -654,7 +700,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800/60">
-                      {filteredClaims.map((claim) => (
+                      {paginatedFilteredClaims.map((claim) => (
                         <tr 
                           key={claim.id} 
                           className="hover:bg-slate-800/20 transition-colors cursor-pointer group"
@@ -722,7 +768,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
 
                 {/* Mobile View (Cards) */}
                 <div className="md:hidden divide-y divide-slate-800/60">
-                  {filteredClaims.map((claim) => (
+                  {paginatedFilteredClaims.map((claim) => (
                     <div 
                       key={claim.id} 
                       onClick={() => onViewClaim(claim)}
@@ -778,6 +824,85 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                 </div>
               </>
             )}
+
+            {/* Pagination Controls */}
+            <div className="bg-slate-900/30 border-t border-slate-800/80 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 mt-2 rounded-b-xl">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span>Rows per page:</span>
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      setRowsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-slate-300 font-semibold focus:outline-none cursor-pointer focus:border-cyan-500 transition-colors"
+                  >
+                    <option value={6}>6</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                  </select>
+                </div>
+                <span>
+                  Showing {totalItems === 0 ? 0 : startIndex + 1} to {Math.min(startIndex + rowsPerPage, totalItems)} of {totalItems} entries
+                </span>
+              </div>
+              
+              {totalPages > 1 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${
+                      currentPage === 1
+                        ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
+                        : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
+                    }`}
+                  >
+                    Prev
+                  </button>
+                  
+                  {getPageNumbers().map((pageNum, idx) => {
+                    if (pageNum === '...') {
+                      return (
+                        <span key={`dots-${idx}`} className="px-2 py-1 text-slate-500 font-bold">
+                          ...
+                        </span>
+                      );
+                    }
+                    return (
+                      <button
+                        key={`page-${pageNum}`}
+                        type="button"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all select-none cursor-pointer ${
+                          currentPage === pageNum
+                            ? 'bg-cyan-500 text-slate-950 font-bold shadow'
+                            : 'border border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    className={`px-2.5 py-1.5 rounded-lg border font-semibold transition-all select-none ${
+                      currentPage === totalPages
+                        ? 'border-slate-800 text-slate-650 cursor-not-allowed opacity-40'
+                        : 'border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white cursor-pointer'
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
