@@ -184,7 +184,7 @@ export default function App() {
           // Staff submits existing draft, pending, or rejected claim
           const resetItems = (claimDetails.items || []).map(item => ({
             ...item,
-            approved: false
+            approved: item.approved === true
           }));
           res = await fetch(`/api/claims/${activeClaim.id}`, {
             method: 'PUT',
@@ -241,7 +241,7 @@ export default function App() {
           // Staff updates existing draft, pending, or rejected claim
           const resetItems = (claimDetails.items || []).map(item => ({
             ...item,
-            approved: false
+            approved: item.approved === true
           }));
           res = await fetch(`/api/claims/${activeClaim.id}`, {
             method: 'PUT',

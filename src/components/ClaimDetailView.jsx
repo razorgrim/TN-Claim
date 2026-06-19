@@ -30,7 +30,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
   const [reviewItems, setReviewItems] = useState(() => {
     return (claim.items || []).map(item => ({
       ...item,
-      approved: claim.status === 'Pending' ? false : (item.approved === true)
+      approved: item.approved === true
     }));
   });
 
