@@ -116,6 +116,7 @@ export default function App() {
           name: updatedProfile.name,
           ic: updatedProfile.ic,
           contact: updatedProfile.contact,
+          email: updatedProfile.email,
           department: updatedProfile.department
         }));
         return true;

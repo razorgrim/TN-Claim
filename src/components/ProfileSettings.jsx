@@ -87,6 +87,36 @@ export default function ProfileSettings({ profile, onUpdateProfile }) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Username */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
+              <User className="w-4 h-4 text-slate-400" /> Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username || ''}
+              disabled
+              className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 cursor-not-allowed opacity-60 focus:outline-none transition-all"
+            />
+          </div>
+
+          {/* Email Address */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
+              <span className="w-4 h-4 flex items-center justify-center text-slate-400 font-bold text-xs">@</span> Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email || ''}
+              onChange={handleChange}
+              placeholder="e.g. staff@neutron.com"
+              className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+            />
+          </div>
+
           {/* Employee Name */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
@@ -111,11 +141,9 @@ export default function ProfileSettings({ profile, onUpdateProfile }) {
             <input
               type="text"
               name="ic"
-              required
+              disabled
               value={formData.ic || ''}
-              onChange={handleChange}
-              placeholder="e.g. 940815-14-5321"
-              className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+              className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-400 cursor-not-allowed opacity-60 focus:outline-none transition-all"
             />
           </div>
 

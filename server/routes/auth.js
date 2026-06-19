@@ -295,6 +295,10 @@ router.put('/profile', requireAuth, async (req, res) => {
     ic: Joi.string().required(),
     contact: Joi.string().required(),
     department: Joi.string().required(),
+    email: Joi.string().email().required().messages({
+      'string.email': 'Please enter a valid email address',
+      'string.empty': 'Email is required'
+    }),
     password: Joi.string().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/).optional().allow('')
   });
 
@@ -303,23 +307,29 @@ router.put('/profile', requireAuth, async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { name, ic, contact, password } = value;
+  const { name, ic, contact, email, password } = value;
   const db = getDb();
 
   try {
+    // Check if email already exists for another user
+    const [existingEmail] = await db.query('SELECT id FROM users WHERE email = ? AND id != ?', [email, req.user.id]);
+    if (existingEmail.length > 0) {
+      return res.status(400).json({ error: 'Email address is already in use by another account.' });
+    }
+
     if (password && password.trim().length > 0) {
       const passwordHash = await bcrypt.hash(password, 10);
       await db.query(`
         UPDATE users 
-        SET name = ?, ic = ?, contact = ?, password_hash = ?
+        SET name = ?, ic = ?, contact = ?, email = ?, password_hash = ?
         WHERE id = ?
-      `, [name, ic, contact, passwordHash, req.user.id]);
+      `, [name, ic, contact, email, passwordHash, req.user.id]);
     } else {
       await db.query(`
         UPDATE users 
-        SET name = ?, ic = ?, contact = ?
+        SET name = ?, ic = ?, contact = ?, email = ?
         WHERE id = ?
-      `, [name, ic, contact, req.user.id]);
+      `, [name, ic, contact, email, req.user.id]);
     }
 
     return res.json({ message: 'Profile updated successfully.' });
