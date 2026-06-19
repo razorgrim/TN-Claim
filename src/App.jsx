@@ -47,6 +47,22 @@ export default function App() {
       if (res.ok) {
         const data = await res.json();
         setClaims(data);
+
+        // Sync active claim details in real-time if currently viewing it
+        setActiveClaim(prevActive => {
+          if (!prevActive) return null;
+          const updated = data.find(c => c.id === prevActive.id);
+          if (updated) {
+            if (
+              updated.status !== prevActive.status ||
+              updated.admin_comments !== prevActive.admin_comments ||
+              JSON.stringify(updated.items) !== JSON.stringify(prevActive.items)
+            ) {
+              return updated;
+            }
+          }
+          return prevActive;
+        });
       }
     } catch (err) {
       console.error('Error fetching claims:', err);
@@ -55,20 +71,20 @@ export default function App() {
     }
   };
 
-  // Live updates polling for dashboard
+  // Live updates polling (runs globally when user is logged in)
   useEffect(() => {
-    if (!user || currentTab !== 'dashboard') return;
+    if (!user) return;
 
     // Fetch immediately
     fetchClaims();
 
-    // Set up polling every 5 seconds
+    // Set up polling every 3 seconds for fast, real-time live updates
     const intervalId = setInterval(() => {
       fetchClaims(true);
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(intervalId);
-  }, [user, currentTab]);
+  }, [user]);
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
