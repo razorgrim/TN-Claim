@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Shield } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Shield } from 'lucide-react';
 
 export default function Login({ onLoginSuccess }) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +17,7 @@ export default function Login({ onLoginSuccess }) {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
@@ -62,16 +62,16 @@ export default function Login({ onLoginSuccess }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email input */}
+          {/* Username input */}
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">Email Address</label>
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">Username</label>
             <div className="relative">
-              <Mail className="w-4.5 h-4.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <User className="w-4.5 h-4.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="email"
+                type="text"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-slate-950/80 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-medium"
               />
             </div>

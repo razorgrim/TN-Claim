@@ -17,6 +17,7 @@ export default function ManageStaff({ currentUser }) {
 
   // Form State
   const [formData, setFormData] = useState({
+    username: '',
     name: '',
     email: '',
     password: '',
@@ -59,6 +60,7 @@ export default function ManageStaff({ currentUser }) {
 
   const openAddModal = () => {
     setFormData({
+      username: '',
       name: '',
       email: '',
       password: '',
@@ -82,6 +84,7 @@ export default function ManageStaff({ currentUser }) {
       userCompany = 'Siqma Group (M) Sdn Bhd';
     }
     setFormData({
+      username: user.username || '',
       name: user.name,
       email: user.email,
       password: '',
@@ -112,6 +115,7 @@ export default function ManageStaff({ currentUser }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          username: formData.username,
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -151,6 +155,7 @@ export default function ManageStaff({ currentUser }) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          username: formData.username,
           name: formData.name,
           email: formData.email,
           password: formData.password || undefined,
@@ -204,6 +209,7 @@ export default function ManageStaff({ currentUser }) {
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.username && user.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (user.company && user.company.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
@@ -273,7 +279,10 @@ export default function ManageStaff({ currentUser }) {
               <tbody className="divide-y divide-slate-800/60 text-xs text-slate-300">
                 {filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-slate-800/10 transition-colors">
-                    <td className="px-5 py-4 font-bold text-slate-200">{u.name}</td>
+                    <td className="px-5 py-4">
+                      <div className="font-bold text-slate-200">{u.name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">@{u.username}</div>
+                    </td>
                     <td className="px-5 py-4 font-medium text-slate-400">{u.email}</td>
                     <td className="px-5 py-4 font-mono">{u.ic || '-'}</td>
                     <td className="px-5 py-4 font-mono">{u.contact || '-'}</td>
@@ -351,6 +360,23 @@ export default function ManageStaff({ currentUser }) {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Username */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Username</label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      name="username"
+                      required
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="e.g. ahmadr"
+                      className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+
                 {/* Full Name */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Full Name</label>
@@ -572,6 +598,23 @@ export default function ManageStaff({ currentUser }) {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Username */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Username</label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      name="username"
+                      required
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="e.g. ahmadr"
+                      className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+
                 {/* Full Name */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Full Name</label>

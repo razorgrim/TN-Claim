@@ -33,6 +33,7 @@ async function main() {
     await connection.query(`
       CREATE TABLE users (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
@@ -71,10 +72,11 @@ async function main() {
     console.log('Seeding default users...');
     // Seed admin
     await connection.query(`
-      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, username, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       1,
+      'admin',
       'Finance Admin',
       'admin@neutron.com',
       adminPassHash,
@@ -88,10 +90,11 @@ async function main() {
 
     // Seed staff member
     await connection.query(`
-      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, username, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       2,
+      'staff',
       'Ahmad Bin Razak',
       'staff@neutron.com',
       staffPassHash,

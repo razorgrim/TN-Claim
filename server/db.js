@@ -52,6 +52,7 @@ export async function initializeDatabase() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(255) UNIQUE,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
@@ -110,6 +111,15 @@ export async function initializeDatabase() {
       // Ignore error if column already exists
     }
 
+    // Dynamically add 'username' column to users table if it does not exist
+    try {
+      await connection.query(`
+        ALTER TABLE users ADD COLUMN username VARCHAR(255) UNIQUE;
+      `);
+    } catch (err) {
+      // Ignore error if column already exists
+    }
+
     // Rename existing default emails if they exist in the DB
     try {
       await connection.query("UPDATE users SET email = 'admin@neutron.com' WHERE email = 'admin@totalneutron.com'");
@@ -125,6 +135,14 @@ export async function initializeDatabase() {
       console.warn('Could not migrate legacy company names:', err.message);
     }
 
+    // Populate username for existing users
+    try {
+      await connection.query("UPDATE users SET username = 'admin' WHERE email = 'admin@neutron.com' AND username IS NULL");
+      await connection.query("UPDATE users SET username = SUBSTRING_INDEX(email, '@', 1) WHERE username IS NULL");
+    } catch (err) {
+      console.warn('Could not populate username for existing users:', err.message);
+    }
+
     // Seed default users if empty
     const [rows] = await connection.query('SELECT COUNT(*) as count FROM users');
     if (rows[0].count === 0) {
@@ -134,9 +152,10 @@ export async function initializeDatabase() {
 
       // Seed admin
       await connection.query(`
-        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate, company)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (username, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
+        'admin',
         'Finance Admin',
         'admin@neutron.com',
         adminPassHash,
@@ -150,9 +169,10 @@ export async function initializeDatabase() {
 
       // Seed staff member
       await connection.query(`
-        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate, company)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (username, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
+        'staff',
         'Ahmad Bin Razak',
         'staff@neutron.com',
         staffPassHash,
