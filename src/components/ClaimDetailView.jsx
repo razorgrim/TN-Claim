@@ -25,6 +25,7 @@ const formatDate = (dateStr) => {
 export default function ClaimDetailView({ role, claim, onBack, onApprove, onReject, onEditClaim, onDeleteClaim, onArchiveClaim }) {
   const [adminComments, setAdminComments] = useState(claim.admin_comments || claim.adminComments || '');
   const [receiptModalUrl, setReceiptModalUrl] = useState(null);
+  const [error, setError] = useState('');
 
   const [reviewItems, setReviewItems] = useState(() => {
     return (claim.items || []).map(item => ({
@@ -73,6 +74,7 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
 
   const toggleRowApproval = (index) => {
     if (claim.status !== 'Pending') return;
+    setError('');
     setReviewItems(prev => prev.map((item, idx) => {
       if (idx === index) {
         return { ...item, approved: !item.approved };
@@ -85,11 +87,18 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
   const approvedItems = reviewItems.filter(item => item.approved === true);
 
   const handleApprove = () => {
+    const allTicked = reviewItems.every(item => item.approved);
+    if (!allTicked) {
+      setError("You cannot approve this claim because there are unchecked/unticked rows. Please check all rows before approving, or reject the claim instead.");
+      return;
+    }
+    setError('');
     const computedTotals = calculateTotals(reviewItems, claim.type);
     onApprove(claim.id, adminComments, reviewItems, computedTotals);
   };
 
   const handleReject = () => {
+    setError('');
     const computedTotals = calculateTotals(reviewItems, claim.type);
     onReject(claim.id, adminComments, reviewItems, computedTotals);
   };
@@ -263,6 +272,12 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
             <CheckCircle2 className="w-5 h-5 text-amber-500" />
             Admin Review Panel
           </h3>
+          {error && (
+            <div className="p-3.5 bg-rose-500/15 border border-rose-500/35 rounded-xl flex items-center gap-2.5 text-rose-300 text-xs">
+              <AlertCircle className="w-4.5 h-4.5 text-rose-400 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
           <div className="space-y-2">
             <label className="text-sm text-slate-300 font-medium block">Approval / Rejection Comments:</label>
             <textarea
