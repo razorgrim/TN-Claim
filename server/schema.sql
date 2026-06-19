@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   department VARCHAR(100) NOT NULL,
   role ENUM('staff', 'admin') DEFAULT 'staff',
   mileage_rate DECIMAL(4, 2) DEFAULT 0.60,
+  company VARCHAR(100) DEFAULT 'Total Neutron Solution Sdn Bhd',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 

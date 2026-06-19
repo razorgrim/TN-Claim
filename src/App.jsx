@@ -383,9 +383,13 @@ export default function App() {
         <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
           {/* Logo / Corporate Identity */}
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+            <img 
+              src={user.company && user.company.toLowerCase().includes('siqma') ? '/siqma_logo.png' : '/logo.png'} 
+              alt="Logo" 
+              className="w-8 h-8 object-contain" 
+            />
             <span className="font-display font-extrabold text-xs sm:text-sm tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-slate-300">
-              TOTAL NEUTRON SOLUTION SDN BHD
+              {user.company && user.company.toLowerCase().includes('siqma') ? 'SIQMA GROUP (M) SDN BHD' : 'TOTAL NEUTRON SOLUTION SDN BHD'}
             </span>
           </div>
 

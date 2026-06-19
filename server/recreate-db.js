@@ -41,6 +41,7 @@ async function main() {
         department VARCHAR(100) NOT NULL,
         role ENUM('staff', 'admin') DEFAULT 'staff',
         mileage_rate DECIMAL(4, 2) DEFAULT 0.60,
+        company VARCHAR(100) DEFAULT 'Total Neutron Solution Sdn Bhd',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       ) ENGINE=InnoDB;
     `);
@@ -70,8 +71,8 @@ async function main() {
     console.log('Seeding default users...');
     // Seed admin
     await connection.query(`
-      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       1,
       'Finance Admin',
@@ -81,13 +82,14 @@ async function main() {
       '+60 3-8320 8306',
       'Finance & HR',
       'admin',
-      0.60
+      0.60,
+      'Total Neutron Solution Sdn Bhd'
     ]);
 
     // Seed staff member
     await connection.query(`
-      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       2,
       'Ahmad Bin Razak',
@@ -97,7 +99,8 @@ async function main() {
       '+60 12-345 6789',
       'Technical Operations',
       'staff',
-      0.60
+      0.60,
+      'Siqma Group (M) Sdn Bhd'
     ]);
 
     await connection.end();

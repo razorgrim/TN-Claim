@@ -40,6 +40,9 @@ const adminRegisterSchema = Joi.object({
   }),
   role: Joi.string().valid('staff', 'admin').required().messages({
     'any.only': 'Please select a valid role'
+  }),
+  company: Joi.string().valid('Total Neutron Solution Sdn Bhd', 'Siqma Group (M) Sdn Bhd').required().messages({
+    'any.only': 'Please select a valid company'
   })
 });
 
@@ -56,7 +59,8 @@ const adminUpdateUserSchema = Joi.object({
     'Finance & HR', 
     'Management'
   ).required(),
-  role: Joi.string().valid('staff', 'admin').required()
+  role: Joi.string().valid('staff', 'admin').required(),
+  company: Joi.string().valid('Total Neutron Solution Sdn Bhd', 'Siqma Group (M) Sdn Bhd').required()
 });
 
 const loginSchema = Joi.object({
@@ -70,7 +74,7 @@ const loginSchema = Joi.object({
 router.get('/users', requireAdmin, async (req, res) => {
   const db = getDb();
   try {
-    const [rows] = await db.query('SELECT id, name, email, role, ic, contact, department, mileage_rate FROM users ORDER BY name ASC');
+    const [rows] = await db.query('SELECT id, name, email, role, ic, contact, department, mileage_rate, company FROM users ORDER BY name ASC');
     return res.json(rows);
   } catch (err) {
     console.error('Error listing users:', err);
@@ -85,7 +89,7 @@ router.post('/users', requireAdmin, async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { name, email, password, ic, contact, department, role } = value;
+  const { name, email, password, ic, contact, department, role, company } = value;
   const db = getDb();
 
   try {
@@ -97,9 +101,9 @@ router.post('/users', requireAdmin, async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     await db.query(`
-      INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 0.60)
-    `, [name, email, passwordHash, ic, contact, department, role]);
+      INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0.60, ?)
+    `, [name, email, passwordHash, ic, contact, department, role, company]);
 
     return res.status(201).json({ message: 'User account created successfully.' });
   } catch (err) {
@@ -115,7 +119,7 @@ router.put('/users/:id', requireAdmin, async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { name, email, password, ic, contact, department, role } = value;
+  const { name, email, password, ic, contact, department, role, company } = value;
   const userId = req.params.id;
   const db = getDb();
 
@@ -129,15 +133,15 @@ router.put('/users/:id', requireAdmin, async (req, res) => {
       const passwordHash = await bcrypt.hash(password, 10);
       await db.query(`
         UPDATE users 
-        SET name = ?, email = ?, password_hash = ?, ic = ?, contact = ?, department = ?, role = ?
+        SET name = ?, email = ?, password_hash = ?, ic = ?, contact = ?, department = ?, role = ?, company = ?
         WHERE id = ?
-      `, [name, email, passwordHash, ic, contact, department, role, userId]);
+      `, [name, email, passwordHash, ic, contact, department, role, company, userId]);
     } else {
       await db.query(`
         UPDATE users 
-        SET name = ?, email = ?, ic = ?, contact = ?, department = ?, role = ?
+        SET name = ?, email = ?, ic = ?, contact = ?, department = ?, role = ?, company = ?
         WHERE id = ?
-      `, [name, email, ic, contact, department, role, userId]);
+      `, [name, email, ic, contact, department, role, company, userId]);
     }
 
     return res.json({ message: 'User account updated successfully.' });
@@ -194,7 +198,7 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, company: user.company },
       process.env.JWT_SECRET || 'supersecretjwtkey123!@#',
       { expiresIn: '8h' }
     );
@@ -217,7 +221,8 @@ router.post('/login', async (req, res) => {
         ic: user.ic,
         contact: user.contact,
         department: user.department,
-        mileageRate: parseFloat(user.mileage_rate)
+        mileageRate: parseFloat(user.mileage_rate),
+        company: user.company
       }
     });
   } catch (err) {
@@ -236,7 +241,7 @@ router.post('/logout', (req, res) => {
 router.get('/me', requireAuth, async (req, res) => {
   const db = getDb();
   try {
-    const [users] = await db.query('SELECT id, name, email, role, ic, contact, department, mileage_rate FROM users WHERE id = ?', [req.user.id]);
+    const [users] = await db.query('SELECT id, name, email, role, ic, contact, department, mileage_rate, company FROM users WHERE id = ?', [req.user.id]);
     if (users.length === 0) {
       return res.status(404).json({ error: 'User not found.' });
     }
@@ -251,7 +256,8 @@ router.get('/me', requireAuth, async (req, res) => {
         ic: user.ic,
         contact: user.contact,
         department: user.department,
-        mileageRate: parseFloat(user.mileage_rate)
+        mileageRate: parseFloat(user.mileage_rate),
+        company: user.company
       }
     });
   } catch (err) {

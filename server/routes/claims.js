@@ -23,7 +23,7 @@ router.get('/', requireAuth, async (req, res) => {
     
     if (req.user.role === 'admin') {
       query = `
-        SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department 
+        SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department, u.company 
         FROM claims c 
         JOIN users u ON c.user_id = u.id 
         ORDER BY c.created_at DESC
@@ -31,7 +31,7 @@ router.get('/', requireAuth, async (req, res) => {
       params = [];
     } else {
       query = `
-        SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department 
+        SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department, u.company 
         FROM claims c 
         JOIN users u ON c.user_id = u.id 
         WHERE c.user_id = ? 
@@ -54,7 +54,7 @@ router.get('/:id', requireAuth, async (req, res) => {
   const db = getDb();
   try {
     const [rows] = await db.query(`
-      SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department 
+      SELECT c.*, u.name as employeeName, u.ic, u.contact, u.department, u.company 
       FROM claims c 
       JOIN users u ON c.user_id = u.id 
       WHERE c.id = ?

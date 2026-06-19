@@ -60,6 +60,7 @@ export async function initializeDatabase() {
         department VARCHAR(100) NOT NULL,
         role ENUM('staff', 'admin') DEFAULT 'staff',
         mileage_rate DECIMAL(4, 2) DEFAULT 0.60,
+        company VARCHAR(100) DEFAULT 'Total Neutron Solution Sdn Bhd',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       ) ENGINE=InnoDB;
     `);
@@ -100,12 +101,28 @@ export async function initializeDatabase() {
       // Ignore error if column already exists
     }
 
+    // Dynamically add 'company' column to users table if it does not exist
+    try {
+      await connection.query(`
+        ALTER TABLE users ADD COLUMN company VARCHAR(100) DEFAULT 'Total Neutron Solution Sdn Bhd';
+      `);
+    } catch (err) {
+      // Ignore error if column already exists
+    }
+
     // Rename existing default emails if they exist in the DB
     try {
       await connection.query("UPDATE users SET email = 'admin@neutron.com' WHERE email = 'admin@totalneutron.com'");
       await connection.query("UPDATE users SET email = 'staff@neutron.com' WHERE email = 'staff@totalneutron.com'");
     } catch (err) {
       console.warn('Could not rename existing users (might not exist yet):', err.message);
+    }
+
+    // Rename any legacy company name to the current company name
+    try {
+      await connection.query("UPDATE users SET company = 'Siqma Group (M) Sdn Bhd' WHERE company = 'Siqma Sdn Bhd' OR company = 'Siqma'");
+    } catch (err) {
+      console.warn('Could not migrate legacy company names:', err.message);
     }
 
     // Seed default users if empty
@@ -117,8 +134,8 @@ export async function initializeDatabase() {
 
       // Seed admin
       await connection.query(`
-        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
         'Finance Admin',
         'admin@neutron.com',
@@ -127,13 +144,14 @@ export async function initializeDatabase() {
         '+60 3-8320 8306',
         'Finance & HR',
         'admin',
-        0.60
+        0.60,
+        'Total Neutron Solution Sdn Bhd'
       ]);
 
       // Seed staff member
       await connection.query(`
-        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (name, email, password_hash, ic, contact, department, role, mileage_rate, company)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
         'Ahmad Bin Razak',
         'staff@neutron.com',
@@ -142,7 +160,8 @@ export async function initializeDatabase() {
         '+60 12-345 6789',
         'Technical Operations',
         'staff',
-        0.60
+        0.60,
+        'Siqma Group (M) Sdn Bhd'
       ]);
       console.log('Default users successfully seeded.');
     }

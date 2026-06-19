@@ -70,6 +70,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
     const matchesSearch =
       claim.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       claim.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (claim.company && claim.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
       claim.id.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'All' || claim.status === statusFilter;
@@ -90,6 +91,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
         groupedFEs[name] = {
           employeeName: name,
           department: claim.department,
+          company: claim.company,
           ic: claim.ic,
           contact: claim.contact,
           claims: [],
@@ -465,7 +467,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                   <User className="w-4 h-4 text-cyan-400" />
                                   {fe.employeeName}
                                 </div>
-                                <div className="text-xs text-slate-500 mt-0.5">{fe.department} • {fe.contact}</div>
+                                <div className="text-xs text-slate-500 mt-0.5">{fe.company && fe.company.toLowerCase().includes('siqma') ? 'Siqma Group (M) Sdn Bhd' : (fe.company || 'Total Neutron Solution Sdn Bhd')}</div>
                               </td>
                               <td className="px-6 py-4 text-center font-bold text-slate-350">
                                 {fe.totalClaims}
@@ -588,7 +590,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                               <User className="w-4 h-4 text-cyan-400 shrink-0" />
                               {fe.employeeName}
                             </div>
-                            <div className="text-xs text-slate-500 mt-1 truncate">{fe.department}</div>
+                            <div className="text-xs text-slate-500 mt-1 truncate">{fe.company && fe.company.toLowerCase().includes('siqma') ? 'Siqma Group (M) Sdn Bhd' : (fe.company || 'Total Neutron Solution Sdn Bhd')}</div>
 
                             <div className="flex flex-wrap items-center gap-2 mt-2">
                               <span className="px-2 py-0.5 bg-slate-800 text-[10px] text-slate-400 rounded font-bold border border-slate-700">
@@ -714,7 +716,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                                 <User className="w-3.5 h-3.5 text-slate-400" />
                                 {claim.employeeName}
                               </div>
-                              <div className="text-xs text-slate-500 mt-0.5">{claim.department}</div>
+                              <div className="text-xs text-slate-500 mt-0.5">{claim.company && claim.company.toLowerCase().includes('siqma') ? 'Siqma Group (M) Sdn Bhd' : (claim.company || 'Total Neutron Solution Sdn Bhd')}</div>
                             </td>
                           )}
                           <td className="px-6 py-4.5">
@@ -786,7 +788,7 @@ export default function Dashboard({ role, claims, profile, onStartClaim, onViewC
                       {role === 'admin' && (
                         <div className="bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80 text-xs flex flex-col gap-1">
                           <span className="text-slate-400 font-medium">Employee Details:</span>
-                          <span className="text-slate-200 font-bold">{claim.employeeName} ({claim.department})</span>
+                          <span className="text-slate-200 font-bold">{claim.employeeName} ({claim.company && claim.company.toLowerCase().includes('siqma') ? 'Siqma Group (M) Sdn Bhd' : (claim.company || 'Total Neutron Solution Sdn Bhd')})</span>
                         </div>
                       )}
 

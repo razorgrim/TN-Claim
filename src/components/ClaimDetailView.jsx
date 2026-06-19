@@ -595,16 +595,25 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
           {/* Corporate Header */}
           <div className="flex items-center border-b-2 border-slate-900 pb-3 mb-3 gap-3 print:border-black print-border-dark">
             {/* Logo */}
-            <img src="/logo.png" alt="Total Neutron Logo" className="w-12 h-12 object-contain shrink-0" />
+            <img 
+              src={claim.company && claim.company.toLowerCase().includes('siqma') ? '/siqma_logo.png' : '/logo.png'} 
+              alt="Logo" 
+              className="w-12 h-12 object-contain shrink-0" 
+            />
             <div className="text-left print-text-dark">
               <h2 className="text-base font-bold tracking-tight text-slate-900">
-                TOTAL NEUTRON SOLUTION SDN BHD <span className="text-xs font-normal text-slate-500 print:text-black">(1064906-M)</span>
+                {claim.company && claim.company.toLowerCase().includes('siqma') ? 'SIQMA GROUP (M) SDN BHD' : 'TOTAL NEUTRON SOLUTION SDN BHD'}{' '}
+                <span className="text-xs font-normal text-slate-500 print:text-black">
+                  ({claim.company && claim.company.toLowerCase().includes('siqma') ? '1007170-M' : '1064906-M'})
+                </span>
               </h2>
               <p className="text-[10px] text-slate-500 leading-normal mt-0.5 font-medium print:text-black">
-                5-2 PERSIARAN SYED PUTRA 3 TAMAN PERSIARAN DESA 50460 SEPUTEH KUALA LUMPUR
+                {claim.company && claim.company.toLowerCase().includes('siqma') 
+                  ? '17A, JLN PINANG 4/1, BANDAR HILLPARK, 42300 KUALA SELANGOR, SELANGOR' 
+                  : '5-2 PERSIARAN SYED PUTRA 3 TAMAN PERSIARAN DESA 50460 SEPUTEH KUALA LUMPUR'}
               </p>
               <p className="text-[9px] text-slate-400 mt-0.5 font-bold print:text-black">
-                TEL: 603-8320 8306
+                TEL: {claim.company && claim.company.toLowerCase().includes('siqma') ? '03-60397790' : '603-8320 8306'}
               </p>
             </div>
           </div>

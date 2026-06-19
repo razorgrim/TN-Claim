@@ -24,7 +24,8 @@ export default function ManageStaff({ currentUser }) {
     ic: '',
     contact: '',
     department: 'Technical Operations',
-    role: 'staff'
+    role: 'staff',
+    company: 'Total Neutron Solution Sdn Bhd'
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -65,7 +66,8 @@ export default function ManageStaff({ currentUser }) {
       ic: '',
       contact: '',
       department: 'Technical Operations',
-      role: 'staff'
+      role: 'staff',
+      company: 'Total Neutron Solution Sdn Bhd'
     });
     setError('');
     setSuccess('');
@@ -74,6 +76,11 @@ export default function ManageStaff({ currentUser }) {
 
   const openEditModal = (user) => {
     setSelectedUser(user);
+    // Normalize company name
+    let userCompany = user.company || 'Total Neutron Solution Sdn Bhd';
+    if ((userCompany && userCompany.toLowerCase().includes('siqma')) || (user.email && user.email.toLowerCase().includes('siqma'))) {
+      userCompany = 'Siqma Group (M) Sdn Bhd';
+    }
     setFormData({
       name: user.name,
       email: user.email,
@@ -82,7 +89,8 @@ export default function ManageStaff({ currentUser }) {
       ic: user.ic,
       contact: user.contact,
       department: user.department,
-      role: user.role
+      role: user.role,
+      company: userCompany
     });
     setError('');
     setSuccess('');
@@ -110,7 +118,8 @@ export default function ManageStaff({ currentUser }) {
           ic: formData.ic,
           contact: formData.contact,
           department: formData.department,
-          role: formData.role
+          role: formData.role,
+          company: formData.company
         })
       });
 
@@ -148,7 +157,8 @@ export default function ManageStaff({ currentUser }) {
           ic: formData.ic,
           contact: formData.contact,
           department: formData.department,
-          role: formData.role
+          role: formData.role,
+          company: formData.company
         })
       });
 
@@ -190,11 +200,11 @@ export default function ManageStaff({ currentUser }) {
     }
   };
 
-  // Filter users based on search term
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.department.toLowerCase().includes(searchTerm.toLowerCase())
+    user.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.company && user.company.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -254,6 +264,7 @@ export default function ManageStaff({ currentUser }) {
                   <th className="px-5 py-4">Email Address</th>
                   <th className="px-5 py-4">IC Number</th>
                   <th className="px-5 py-4">Contact</th>
+                  <th className="px-5 py-4">Company</th>
                   <th className="px-5 py-4">Department</th>
                   <th className="px-5 py-4">System Role</th>
                   <th className="px-5 py-4 text-right">Actions</th>
@@ -266,6 +277,7 @@ export default function ManageStaff({ currentUser }) {
                     <td className="px-5 py-4 font-medium text-slate-400">{u.email}</td>
                     <td className="px-5 py-4 font-mono">{u.ic || '-'}</td>
                     <td className="px-5 py-4 font-mono">{u.contact || '-'}</td>
+                    <td className="px-5 py-4 font-medium text-cyan-400">{u.company && u.company.toLowerCase().includes('siqma') ? 'Siqma Group (M) Sdn Bhd' : (u.company || 'Total Neutron Solution Sdn Bhd')}</td>
                     <td className="px-5 py-4">
                       <span className="px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-md font-semibold text-[10px] text-slate-300">
                         {u.department}
@@ -404,6 +416,23 @@ export default function ManageStaff({ currentUser }) {
                       placeholder="e.g. +60 12-345 6789"
                       className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
                     />
+                  </div>
+                </div>
+
+                {/* Company */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Company</label>
+                  <div className="relative">
+                    <Briefcase className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <select
+                      name="company"
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="Total Neutron Solution Sdn Bhd">Total Neutron Solution Sdn Bhd</option>
+                      <option value="Siqma Group (M) Sdn Bhd">Siqma Group (M) Sdn Bhd</option>
+                    </select>
                   </div>
                 </div>
 
@@ -604,6 +633,23 @@ export default function ManageStaff({ currentUser }) {
                       onChange={handleInputChange}
                       className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                     />
+                  </div>
+                </div>
+
+                {/* Company */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Company</label>
+                  <div className="relative">
+                    <Briefcase className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <select
+                      name="company"
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    >
+                      <option value="Total Neutron Solution Sdn Bhd">Total Neutron Solution Sdn Bhd</option>
+                      <option value="Siqma Group (M) Sdn Bhd">Siqma Group (M) Sdn Bhd</option>
+                    </select>
                   </div>
                 </div>
 
