@@ -12,6 +12,7 @@ import claimsRoutes from './routes/claims.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1); // trust first proxy
 const PORT = process.env.PORT || 5000;
 
 // 1. ADVANCED SECURITY HEADERS (Helmet with custom CSP for PDF/image frames)
