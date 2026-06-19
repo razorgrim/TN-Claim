@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS claims (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 3. Seed default admin & staff users (Default password: my1p@ssw0rd)
--- Pre-computed bcrypt hash for 'my1p@ssw0rd' is: $2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS
+-- 3. Seed default admin & staff users (Default password: My1p@ssw0rd)
+-- Pre-computed bcrypt hash for 'My1p@ssw0rd' is: $2b$10$gbHtQYnea1TtGHvyzg2daOZTOk/KV1XKgPpoTMoI/GwBoqETL4Kiq
 REPLACE INTO users (id, name, email, password_hash, ic, contact, department, role, mileage_rate)
 VALUES 
-(1, 'Finance Admin', 'admin@neutron.com', '$2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS', '900101-14-1111', '+60 3-8320 8306', 'Finance & HR', 'admin', 0.60),
-(2, 'Ahmad Bin Razak', 'staff@neutron.com', '$2b$10$ou5BrPLeDoSsPEnrsPv9beoOP/rFrNCRsj09JNVxfPCmIHPk.MsbS', '940815-14-5321', '+60 12-345 6789', 'Technical Operations', 'staff', 0.60);
+(1, 'Finance Admin', 'admin@neutron.com', '$2b$10$gbHtQYnea1TtGHvyzg2daOZTOk/KV1XKgPpoTMoI/GwBoqETL4Kiq', '900101-14-1111', '+60 3-8320 8306', 'Finance & HR', 'admin', 0.60),
+(2, 'Ahmad Bin Razak', 'staff@neutron.com', '$2b$10$gbHtQYnea1TtGHvyzg2daOZTOk/KV1XKgPpoTMoI/GwBoqETL4Kiq', '940815-14-5321', '+60 12-345 6789', 'Technical Operations', 'staff', 0.60);

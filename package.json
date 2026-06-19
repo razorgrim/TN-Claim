@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "db:init": "node server/init-db.js",
-    "db:reset": "node server/reset-db-users.js"
+    "db:reset": "node server/reset-db-users.js",
+    "db:recreate": "node server/recreate-db.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.1",

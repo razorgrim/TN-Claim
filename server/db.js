@@ -112,8 +112,8 @@ export async function initializeDatabase() {
     const [rows] = await connection.query('SELECT COUNT(*) as count FROM users');
     if (rows[0].count === 0) {
       console.log('No users found. Seeding default users...');
-      const adminPassHash = await bcrypt.hash('my1p@ssw0rd', 10);
-      const staffPassHash = await bcrypt.hash('my1p@ssw0rd', 10);
+      const adminPassHash = await bcrypt.hash('My1p@ssw0rd', 10);
+      const staffPassHash = await bcrypt.hash('My1p@ssw0rd', 10);
 
       // Seed admin
       await connection.query(`
