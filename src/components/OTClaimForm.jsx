@@ -21,14 +21,24 @@ const calculateOT = (checkIn, checkOut, isWeekend) => {
     outH += 24;
   }
 
-  const totalHours = (outH * 60 + outM - (inH * 60 + inM)) / 60;
+  const t_in = inH * 60 + inM;
+  const t_out = outH * 60 + outM;
 
-  // Rule:
-  // Weekday: OT calculated after 9 working hours (Total Hours - 9)
-  // Weekend: OT claimed fully (all hours worked count as OT)
-  const otHours = isWeekend ? totalHours : Math.max(0, totalHours - 9);
+  let otHours = 0;
+  if (isWeekend) {
+    // Weekend/PH: calculate fully without deducting 9 hours
+    otHours = (t_out - t_in) / 60;
+  } else {
+    // Weekday: exclude standard hours 9:00 AM to 6:00 PM
+    const std_start = 9 * 60;  // 540
+    const std_end = 18 * 60;   // 1080
 
-  // Round to 1 decimal place or keep as float
+    const ot_before = Math.max(0, Math.min(std_start, t_out) - t_in);
+    const ot_after = Math.max(0, t_out - Math.max(std_end, t_in));
+    otHours = (ot_before + ot_after) / 60;
+  }
+
+  // Round to 1 decimal place
   const roundedOt = Math.round(otHours * 10) / 10;
 
   if (isWeekend) {
@@ -253,7 +263,8 @@ export default function OTClaimForm({ profile, draftClaim, role, onSaveDraft, on
             <div className="font-bold flex items-center gap-1">
               <CheckCircle className="w-3.5 h-3.5" /> OVERTIME RULES:
             </div>
-            <div>• Overtime hours MUST calculate after 9 working hours (e.g. Check Out - Check In - 9 hrs).</div>
+            <div>• Weekday Overtime: Excludes standard hours (9:00 AM to 6:00 PM). Only hours worked outside this window are counted as overtime.</div>
+            <div>• Weekend/PH Overtime: Calculated fully without any 9-hour standard shift deductions.</div>
             <div>• COMPULSORY to fill in the Overtime Reason for each entry.</div>
             <div>• COMPULSORY to attach proof (image or PDF) validating each Overtime claim entry.</div>
             <div>• COMPULSORY: Onsite Overtime attendance must be verified by sharing your live location in the "Attendance OT" WhatsApp group.</div>

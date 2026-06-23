@@ -849,7 +849,8 @@ export default function ClaimDetailView({ role, claim, onBack, onApprove, onReje
             <div className="font-bold uppercase tracking-wider text-slate-700 print:text-black">* Remarks:</div>
             {claim.type === 'ot' ? (
               <>
-                <div>- OVERTIME CLAIM <span className="font-bold">MUST</span> CALCULATE AFTER 9 WORKING HOURS</div>
+                <div>- WEEKDAY OVERTIME EXCLUDES STANDARD HOURS (9:00 AM TO 6:00 PM)</div>
+                <div>- WEEKEND/PH OVERTIME IS CALCULATED FULLY WITHOUT ANY DEDUCTIONS</div>
                 <div>- <span className="font-bold">COMPULSORY</span> TO FILL IN THE OVERTIME REASON</div>
                 <div>- <span className="font-bold">COMPULSORY</span> TO ATTACH PROOF (IMAGE OR PDF) VALIDATING EACH OVERTIME CLAIM ENTRY</div>
                 <div>- <span className="font-bold">COMPULSORY</span>: ONSITE OVERTIME ATTENDANCE MUST BE VERIFIED BY SHARING YOUR LIVE LOCATION IN THE "ATTENDANCE OT" WHATSAPP GROUP</div>
